@@ -10,24 +10,24 @@ import {
   Typography
 } from '@mui/material';
 
-
+const  token = JSON.parse(localStorage.getItem("token")); 
 
 export const Profile = () => {
 
 
-// useEffect(()=>{
+useEffect(()=>{
 
-// axios.get("https://dev.techstreet.in/vmsglen/public/api/profile",{
-// headers:{
-//     Authorization:`Bearer ${'147|770QaHeB3OMMoRMScdjc88lk8WLtJiAhxunPbWjT'}`
-// }
-// })
+axios.get("https://dev.techstreet.in/vmsglen/public/api/profile",{
+headers:{
+    Authorization:`Bearer ${token}`
+}
+})
 
-// .then((res)=>{
-//     console.log(res.data.data)
-// })
+.then((res)=>{
+    console.log(res.data.data)
+})
 
-// },[])
+},[])
 
   return (
     <div>

@@ -16,12 +16,14 @@ import {
   TablePagination
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+// import { useAuthContext } from './AuthProvider';
+// import { useTokenContext } from 'src/pages/TokenProvider';
 // import Typography from 'src/theme/overrides/Typography';
 
 const apiUrl = 'https://dev.techstreet.in/vmsglen/public/api/vendor/products';
-const apiToken = '147|770QaHeB3OMMoRMScdjc88lk8WLtJiAhxunPbWjT';
+// const apiToken = '111|RkgcCuhjCl68Ebr0b0QTnh3OO9VarqHaUZPWEnj9';
 const itemsPerPage = 10;
-
+ const  token = sessionStorage.getItem("token") 
 
 
 
@@ -32,9 +34,10 @@ export default function ProductList() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
+// const {token}=useTokenContext()
+// const {token}=useAuthContext()
 
-
-
+// console.log(`token:${token}`)
 
   
   
@@ -42,17 +45,16 @@ export default function ProductList() {
 
   useEffect(() => {
 
-if(!localStorage.getItem('token')){
+if(!sessionStorage.getItem('token')){
   navigate('/login')
   
 }
-
 
     const fetchData = async () => {
       try {
         const response = await axios.get(apiUrl, {
           headers: {
-            Authorization: `Bearer ${apiToken}`,
+            Authorization: `Bearer ${token}`,
           },
           params: {
             page: currentPage,
@@ -63,7 +65,7 @@ if(!localStorage.getItem('token')){
         if (!response.data) {
           throw new Error('No data received');
         }
-        // console.log(response)
+        console.log(response)
         setProducts(response.data.data);
       //  const serialNo=response.data.meta.total
      
@@ -77,7 +79,7 @@ if(!localStorage.getItem('token')){
   }, [currentPage, searchTerm])
 
   // useEffect(()=>{
-  //   if(!localStorage.getItem("token")){
+  //   if(!sessionStorage.getItem("token")){
   //     navigate("/login")
   //     // setAuth(true)
   //   }
@@ -91,6 +93,17 @@ if(!localStorage.getItem('token')){
     setSearchTerm(event.target.value);
     setCurrentPage(1); // Reset to the first page when searching
   };
+
+  // const handleSearchChange = (event) => {
+  //   const newSearchTerm = event.target.value;
+  
+  //   if (newSearchTerm.length >= 3) {
+  //     setSearchTerm(newSearchTerm);
+  //     setCurrentPage(1); // Reset to the first page when searching
+  //   } else {
+  //     // Optionally, you can show a message or provide feedback to the user here
+  //   }
+  // };
   
  
 
@@ -171,15 +184,30 @@ if(!localStorage.getItem('token')){
         </TableBody>
         </Table>
         </TableContainer>
-        
-        <TablePagination
+        {/* pagination */}
+        <div
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          marginTop: '20px',
+        }}
+      > 
+        <Pagination
+          count={totalPages}
+          page={currentPage}
+          onChange={handlePageChange}
+          color="secondary"
+        />
+     </div> 
+
+        {/* <TablePagination
   component="div"
   count={totalPages}
   page={currentPage}
   onPageChange={handlePageChange}
   // rowsPerPage={rowsPerPage}
   // onRowsPerPageChange={handleChangeRowsPerPage}
-/>
+/> */}
     </Container>
    
   )

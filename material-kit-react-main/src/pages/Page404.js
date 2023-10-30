@@ -50,3 +50,6 @@ export default function Page404() {
     </>
   );
 }
+
+
+// i have a ledger page in which search functionality occur andwhen we click on search button then   search functionality activated by API  and bring data from API  i want that if a person click on search after both from date and to date selected only then download button will be show and when someone click on download button then download search data whatever a person search from from date to to date this is my code 

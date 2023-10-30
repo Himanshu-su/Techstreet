@@ -42,7 +42,7 @@ return  navigate('/profile')
 
   const handleClose = () => {
    setOpen(null)
-//     localStorage.removeItem("token")
+//     sessionStorage.removeItem("token")
 // navigate("/login")
 // setOpen(null);
   };
@@ -150,7 +150,7 @@ return  navigate('/profile')
         <MenuItem  sx={{ m: 1 }}>
      <div>
      <button onClick={()=>{
-      localStorage.removeItem("token")
+      sessionStorage.removeItem("token")
       navigate("/login")
      }} style={{
           borderRadius:'1px solid white '

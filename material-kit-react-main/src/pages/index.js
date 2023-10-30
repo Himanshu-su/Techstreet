@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types';
-import { createContext, useEffect,useState } from 'react';
+import {
+  //  createContext
+    useEffect,useState } from 'react';
 // import { useLocation } from 'react-router-dom';
 import { NavLink as RouterLink, useLocation, useNavigate } from 'react-router-dom';
 // @mui
@@ -32,7 +34,7 @@ import Scrollbar from '../components/scrollbar';
 import NavSection from '../components/nav-section';
 //
 import navConfig from '../layouts/dashboard/nav/config';
-import { useButtonContext } from './ButttonProvide';
+ import { useAuthContext } from './AuthProvider';
 // import { ListIcon } from '@chakra-ui/react';
 // import { StyledNavItemIcon } from 'src/components/nav-section/styles';
 
@@ -58,21 +60,37 @@ Nav.propTypes = {
   onCloseNav: PropTypes.func,
 };
 
- const Btn=createContext()
+//  const Btn=createContext()
 
 
  function Nav({ openNav, onCloseNav }) {
   const { pathname } = useLocation();
 const isDesktop = useResponsive('up', 'lg');
-const [open, setOpen] = useState(false);
+// const [open, setOpen] = useState(false);
+// const [opens, setOpens] = useState(false);
 // const navigate=useNavigate()
-const { status, setStatus } = useButtonContext();
+const [openPurchaseOrder, setOpenPurchaseOrder] = useState(false);
+const [openDeliveries, setOpenDeliveries] = useState(false);
+
+const { status, setStatus } = useAuthContext()
 
 
 
-const handleToggle = () => {
-  setOpen(!open);
+// const handleToggle = () => {
+//   setOpen(!open);
+// };
+
+// const handleToggles = () => {
+//   setOpens(!opens);
+// };
+const handleTogglePurchaseOrder = () => {
+  setOpenPurchaseOrder(!openPurchaseOrder);
 };
+
+const handleToggleDeliveries = () => {
+  setOpenDeliveries(!openDeliveries);
+};
+
 
 const navConfig =
 
@@ -125,9 +143,14 @@ icon:<FileCopyIcon />
     icon:< ShoppingCartIcon/>,
   },
   {
-    title: 'Delivery',
-    path: '/404',
+    title: 'Deliveries',
+    // path: '/dashboard/delivery',
     icon:< ShopTwoIcon/>,
+    deliverysubtitle:[{
+      title: 'Deliveries List',
+      path: '/dashboard/delivery',
+      icon:< ShoppingBasketIcon/>,
+     }]
   },
   {
     title: 'RFQs',
@@ -205,9 +228,9 @@ icon:<FileCopyIcon />
           <div key={item.title} 
           // style={{marginLeft:'55px'}}
           >
-            <ListItem button onClick={handleToggle}
+            <ListItem button onClick={handleTogglePurchaseOrder}
               component={RouterLink}
-              to={item.path}
+              // to={item.path}
               activeClassName="active" 
             >
               <ListItemIcon>{item.icon}</ListItemIcon>
@@ -225,7 +248,7 @@ icon:<FileCopyIcon />
             }}
             > {item.dropdown}</ListItemIcon> */}
            
-            <Collapse in={open} timeout="auto" unmountOnExit>
+            <Collapse in={openPurchaseOrder} timeout="auto" unmountOnExit>
               {/* {item.subtitle.map((subItem) => ( */}
               <>
              
@@ -235,7 +258,12 @@ icon:<FileCopyIcon />
                   component={RouterLink}
                   // to={subItem.path}
                   activeClassName="active" 
-                  style={{marginLeft:'55px'}}
+                  style={{
+                    width:'15rem',
+                    marginLeft:'3rem',
+                    paddingLeft:'4rem'
+
+                    }}
                 >
                   {/* <ListItemIcon>{item.icon}</ListItemIcon> */}
                   {/* <ListItemText
@@ -249,8 +277,9 @@ icon:<FileCopyIcon />
 
  <Button 
  component={RouterLink} to="/dashboard/user"
- onClick={()=>{
-  setStatus('Accepted')
+ onClick={(e)=>{
+  // e.preventDefault()
+   setStatus('Accepted')
  }}
  >
   Accepted
@@ -260,38 +289,115 @@ icon:<FileCopyIcon />
 <Button
  component={RouterLink} to="/dashboard/user" 
  onClick={()=>{
-  setStatus('In Progress')
+   setStatus('In Progress')
  }}
 >In Progress</Button>
 
 <Button
  component={RouterLink} to="/dashboard/user"
  onClick={()=>{
-  setStatus('Delivered')
+   setStatus('Delivered')
  }}
 >Delivered</Button>
 
 <Button
  component={RouterLink} to="/dashboard/user"
  onClick={()=>{
-  setStatus('Rejected')
+   setStatus('Rejected')
  }}
 >Rejected</Button>
 
 <Button 
  component={RouterLink} to="/dashboard/user"
  onClick={()=>{
-  setStatus('Closed')
+   setStatus('Closed')
  }}
 >Closed</Button>
 </Box>
                 </ListItem>
+
+         
+
+
                
                 </>
               {/* ))} */}
             </Collapse>
           </div>
-        ) : (
+          
+        )
+        :
+        (item.deliverysubtitle)?
+        (
+          <div key={item.title} 
+          // style={{marginLeft:'55px'}}
+          >
+            <ListItem button 
+            onClick={handleToggleDeliveries}
+              component={RouterLink}
+              // to={item.path}
+              // activeClassName="active" 
+            >
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemText disableTypography primary={item.title} 
+              // component={RouterLink}
+              // to={item.path}
+              />
+              {/* {open ? <ExpandMoreIcon /> : <ChevronRightIcon />} */}
+            </ListItem>
+            {/* <ListItemIcon 
+            style={{
+              marginLeft:'65%',
+              // marginBottom:'-20%'
+              marginTop:'-70%'
+            }}
+            > {item.dropdown}</ListItemIcon> */}
+           
+            <Collapse in={openDeliveries} timeout="auto" unmountOnExit>
+              {/* {item.subtitle.map((subItem) => ( */}
+              <>
+             
+              <ListItem
+                  // key={subItem.title}
+                  button
+                  component={RouterLink}
+                  // to={subItem.path}
+                  activeClassName="active" 
+                  style={{
+                    width:'15rem',
+                    marginLeft:'3rem',
+                    paddingLeft:'4rem',
+backgroundColor:'none'
+                    }}
+                >
+                  {/* <ListItemIcon>{item.icon}</ListItemIcon> */}
+                  {/* <ListItemText
+                    disableTypography
+                    primary={subItem.title}
+                    sx={{ paddingLeft: 4 }}
+                  /> */}
+ <Box sx={{ display: 'flex',flexDirection:'column',backgroundColor: 'none', }}>
+
+
+
+ <Button 
+ component={RouterLink}
+  to="/dashboard/delivery"
+ activeClassName="active" 
+
+ >
+Delivaries List 
+</Button>
+
+</Box>
+                </ListItem>          
+                </>
+               {/* ))}  */}
+            </Collapse>
+          </div>
+        )
+        : (
+          <>
           <ListItem
             key={item.title}
             button
@@ -305,10 +411,22 @@ icon:<FileCopyIcon />
             <ListItemText disableTypography primary={item.title} 
              activeClassName="active" 
             />
+            {/* <ListItemText primary={item.deliverysubtitle.title}/> */}
           </ListItem>
+          {/* <ListItem>
+<ListItemText secondary={item.deliverysubtitle.title}/>
+          </ListItem> */}
+          </>
         )
       )}
+      {/* {navConfig.map((item)=>{
+        item.deliverysubtitle.title
+      })} */}
     </List>
+
+    {/* <List>
+      <h1>h</h1>
+    </List> */}
       {/* {info && info} */}
     {/* </StyledNavItem> */}
       
@@ -380,4 +498,5 @@ icon:<FileCopyIcon />
     </Box>
   );
 }
-export {Btn,Nav}
+// export {Btn,Nav}
+export {Nav}

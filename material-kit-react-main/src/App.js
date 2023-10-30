@@ -10,7 +10,8 @@ import ThemeProvider from './theme';
 // components
 import { StyledChart } from './components/chart';
 import ScrollToTop from './components/scroll-to-top';
-import { ButtonProvider } from './pages/ButttonProvide';
+import { AuthProvider } from './pages/AuthProvider';
+
 
 
 // ----------------------------------------------------------------------
@@ -21,11 +22,15 @@ export default function App() {
     <HelmetProvider>
       <BrowserRouter>
         <ThemeProvider>
-          <ButtonProvider>
+        {/* <TokenProvider> */}
+          <AuthProvider>
+       
           <ScrollToTop />
           <StyledChart />
           <Router />
-          </ButtonProvider>
+      
+          </AuthProvider>
+          {/* </TokenProvider> */}
         </ThemeProvider>
       </BrowserRouter>
     </HelmetProvider></ChakraProvider>

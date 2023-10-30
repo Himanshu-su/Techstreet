@@ -34,29 +34,42 @@ import {
 export default function DashboardAppPage() {
   const theme = useTheme();
   const navigate=useNavigate()
-  const [auth,setAuth]=useState(false)
+  // const [auth,setAuth]=useState(false)
+
+  sessionStorage.getItem("token")
+
+//   useEffect(()=>{
+//     if(!localStorage.getItem("token")){
+//       navigate("/login")
+//       // setAuth(true)
+//     }
 
 
 
-  useEffect(()=>{
-    if(!localStorage.getItem("token")){
-      navigate("/login")
-      setAuth(true)
-    }
-
-
-
-// else if(localStorage.getItem("token")){
+// else {
+//   localStorage.getItem("token")
 // toast.success("nice")
 // }
 
-  },[])
+//   },[])
 
-  useEffect(()=>{ 
-  toast.success("success login")
-},[])
+useEffect(() => {
+  // const token = localStorage.getItem('token');
 
- 
+  if (!sessionStorage.getItem('token')) {
+    // Redirect to the login page if the token is not present
+    navigate('/login');
+  } else {
+    // If the token is present, you can display a success message
+    toast.success('Nice');
+  }
+}, []);
+
+
+
+  // useEffect(()=>{ 
+  //   toast.success("success login")
+  // },[])
   
 
 
@@ -255,3 +268,4 @@ export default function DashboardAppPage() {
     </>
   );
 }
+// i am struggling in  a part of my code 

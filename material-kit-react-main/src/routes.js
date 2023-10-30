@@ -1,4 +1,5 @@
-import { Navigate, useRoutes } from 'react-router-dom';
+import { Navigate, useRoutes,useParams } from 'react-router-dom';
+import { useContext } from 'react';
 import {ProfilePage} from './pages/ProfilePage';
 
 
@@ -9,18 +10,25 @@ import SimpleLayout from './layouts/simple';
 //
 
 import BlogPage from './pages/BlogPage';
-import UserPage from './pages/UserPage';
+import UserPage from './pages/Purchase';
 import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
 import ProductsPage from './pages/ProductsPage';
 import DashboardAppPage from './pages/DashboardAppPage';
 import DashboardLayout from './layouts/dashboard/DashboardLayout';
 import { Ledger } from './pages/Ledger';
+import { Delivery } from './pages/Delivery';
+import { Subpurchase } from './pages/Subpurchase';
+import { useAuthContext } from './pages/AuthProvider';
+
 
 
 // ----------------------------------------------------------------------
 
 export default function Router() {
+  const {purchaseId}=useAuthContext()
+  console.log(purchaseId)
+ // const id=purchaseId
   const routes = useRoutes([
     {
       path: '/dashboard',
@@ -33,11 +41,16 @@ export default function Router() {
         { path: 'blog', element: <BlogPage /> },
         { path: 'profile', element: <ProfilePage /> },
         { path: 'ledger', element: <Ledger /> },
+        { path: 'delivery', element: <Delivery /> },
+        { path: `subpurchase`, element: <Subpurchase /> }
+        // { path: `subpurchase/:${purchaseId}`, element: <Subpurchase /> }
+
         
         
       ],
     },
-   
+   // <Route path="/dashboard/subpurchase/:purchaseId" component={Subpurchase} />
+
     {
       path: 'login',
       element: <LoginPage />,
