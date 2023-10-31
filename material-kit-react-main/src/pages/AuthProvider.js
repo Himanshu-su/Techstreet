@@ -9,12 +9,14 @@ export function AuthProvider({ children }) {
   // Define the state or values you want to provide
   const [status, setStatus] = useState('');
   const [purchaseId,setPurchaseId]=useState(null)
+  const [orders,setOrders]=useState(``)
 
   // You can provide other functions or values as well
   const contextValue = {
     purchaseId,
     setPurchaseId, // Make sure this is correctly set
     // Other context values and functions
+    orders,setOrders,
     status, setStatus,
   };
   return (

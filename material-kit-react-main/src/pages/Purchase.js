@@ -148,7 +148,7 @@ const UserPage = () => {
     width: '150px',
   }}
 >
-  <Link to={`/dashboard/subpurchase/${purchaseId}`}>{item.oid}
+<Link to="/dashboard/subpurchase">{item.oid}
   </Link>
 </TableCell>
 

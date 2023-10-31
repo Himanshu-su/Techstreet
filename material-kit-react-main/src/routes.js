@@ -20,6 +20,7 @@ import { Ledger } from './pages/Ledger';
 import { Delivery } from './pages/Delivery';
 import { Subpurchase } from './pages/Subpurchase';
 import { useAuthContext } from './pages/AuthProvider';
+import { Drnlist } from './pages/Drnlist';
 
 
 
@@ -42,7 +43,8 @@ export default function Router() {
         { path: 'profile', element: <ProfilePage /> },
         { path: 'ledger', element: <Ledger /> },
         { path: 'delivery', element: <Delivery /> },
-        { path: `subpurchase`, element: <Subpurchase /> }
+        { path: `subpurchase`, element: <Subpurchase /> },
+        { path: `subpurchase/drnlist`, element: <Drnlist /> }
         // { path: `subpurchase/:${purchaseId}`, element: <Subpurchase /> }
 
         
