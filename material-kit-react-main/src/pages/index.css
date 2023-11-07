@@ -3,6 +3,28 @@
     height: 300px;
     margin: 10% 0px 0px 25%;
 }
+/* subpurchase */
+footer {
+    position: sticky;
+    background-color: white;
+    color: black;
+    width: 100%;
+    padding: 20px 0;
+
+  }
+  
+  .footer-content {
+    max-width: 1400px; /* Set a maximum width for the content within the footer */
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    padding: 0px 30px 0px 30px;
+
+    /* Center the content horizontally */
+  }
+  .footer-content:hover{
+    color: blue;
+  }
 /* media for card */
 @media (max-width:998px){
     .profile{

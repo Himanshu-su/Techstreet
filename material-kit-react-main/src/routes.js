@@ -22,6 +22,7 @@ import { Subpurchase } from './pages/Subpurchase';
 import { useAuthContext } from './pages/AuthProvider';
 import { Drnlist } from './pages/Drnlist';
 import { Newdrn } from './pages/Newdrn';
+import { Footer } from './pages/Footer';
 
 
 
@@ -34,7 +35,7 @@ export default function Router() {
   const routes = useRoutes([
     {
       path: '/dashboard',
-      element: <DashboardLayout />,
+      element: <DashboardLayout /> ,
       children: [
         { element: <Navigate to="/dashboard/app" />, index: true },
         { path: 'app', element: <DashboardAppPage /> },
@@ -71,6 +72,7 @@ export default function Router() {
       path: '*',
       element: <Navigate to="/404" replace />,
     },
+   
   ]);
 
   return routes;

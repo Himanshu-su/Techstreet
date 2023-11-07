@@ -21,6 +21,7 @@ Input,
 
  import { Label } from '@mui/icons-material';
 import { useAuthContext } from './AuthProvider';
+import { Footer } from './Footer';
 // import { HelperText } from '@mui/icons-material';
 
   // const useStyles = makeStyles((theme) => ({
@@ -456,8 +457,11 @@ marginRight:'20px'
         </Button>
       </form> */}
         </TableContainer>
-       
+        
         </Card>
+   {/* footer */}
+   <Footer/>
     </div>
+  
   )
 }

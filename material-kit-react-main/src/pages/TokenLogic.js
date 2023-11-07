@@ -1,12 +1,17 @@
-// import React from 'react'
-// import { useNavigate } from 'react-router-dom'
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-// export const TokenLogic = () => {
-//     const navigate=useNavigate()
+export const TokenLogic = ({ children }) => {
+  const navigate = useNavigate();
 
-// const tokens=!localStorage.getItem("token")
-// if(tokens){
-//     return navigate('/logic')
-// }
-//  return tokens
-// }
+  useEffect(() => {
+    const hasToken = !sessionStorage.getItem("token");
+
+    if (hasToken) {
+      // Redirect to the '/login' route if token is not present
+      navigate('/login');
+    }
+  }, [navigate]);
+
+  return children;
+};

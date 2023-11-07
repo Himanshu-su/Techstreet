@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import axios from 'axios';
 import { Typography, Card, Button,Container,
   Paper,
   Table,
@@ -17,12 +18,16 @@ Input,
   TablePagination, 
   makeStyles,
 } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
 import './index.css'
 import VerifiedIcon from '@mui/icons-material/Verified';
 //   import { HelperText } from '@mui/material';
 
  import { Label } from '@mui/icons-material';
 import { useAuthContext } from './AuthProvider';
+import { Footer } from './Footer';
 // import { HelperText } from '@mui/icons-material';
 
   // const useStyles = makeStyles((theme) => ({
@@ -39,12 +44,15 @@ export const Drnlist = () => {
 
   const [lineItem,setLineItem]=useState([])
   const [isFormVisible, setIsFormVisible] = useState(false);
-  const [inputValue, setInputValue]=useState('')
-  const [inputValue2,setInputValue2]=useState('')
-  const [inputValue3,setInputValue3]=useState('')
-  const [grandTotal1,setGrandTotal1]=useState('')
-  const [grandTotal2,setGrandTotal2]=useState('')
-  const [grandTotal3,setGrandTotal3]=useState('')
+  const [inputValue, setInputValue]=useState(null)
+  const [inputValue2,setInputValue2]=useState(null)
+  const [inputValue3,setInputValue3]=useState(null)
+  const [totalAmount, setTotalAmount] = useState(0);
+  const [totalAmount2, setTotalAmount2] = useState(0);
+  const [totalAmount3, setTotalAmount3] = useState(0);
+  const [idlineItemArray,setIdlineItemArray]=useState(0)
+
+ 
   
   const [conditionInput,setConditionInput]=useState('')
   // const [grandTotalArray, setGrandTotalArray] = useState([]); 
@@ -52,8 +60,8 @@ export const Drnlist = () => {
     invoice: '',
     eway_bill: '',
     drn: '',
-    invoice_no: '',
-    invoice_date: '',
+    invoice_no: null,
+    invoice_date: null,
   });
     
   const { orderUrl, setOrderUrl, purchaseData, setPurchaseData } = useAuthContext();
@@ -78,12 +86,14 @@ useEffect(() => {
           // Retrieve the line_items from the first item in purchaseData
           setLineItem(parsedData[0].line_items);
           setConditionInput(parsedData[0].line_items[0].outstandingQuantity)
+          setIdlineItemArray(parsedData[0].line_items[0].id)
         }
       } catch (error) {
         console.error('Error parsing data from local storage:', error);
       }
     }
   }, [setPurchaseData,setLineItem]);
+
 
   // formDate
   function formatDateWithAMPM(dateString) {
@@ -106,99 +116,100 @@ useEffect(() => {
 
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-  console.log(1)
-    // Your API URL
-    const apiUrl = 'https://vms.glenindia.com/api/delivery/';
-  
+ 
     try {
-      // Create a FormData object to collect form data
-      const formData = new FormData();
+      const response = await axios.post('https://vms.glenindia.com/api/delivery/', {
+        subsidiary_id: 1,
+        location_id: 54,
+        po_id: '232451-001552',  
+        invoice_no: formValues.invoice_no,
+        invoice_date: formValues.invoice_date,
+        invoice:formValues.invoice ,
+        eway_bill: formValues.eway_bill,
+        drn: formValues.drn,
+        items: [
+          {
+            item_id: idlineItemArray,
+            qty: inputValue,
+            amount: totalAmount,
+          },
+        
+        ],
+      });
+  
+      console.log(response.data);
+      console.log(1) // Handle the response from the server
+    } catch (error) {
+      console.error('Error making the POST request:', error);
+    }
   
       // Add input values to the FormData object
-      formData.append('invoice', formValues.invoice);
-      formData.append('eway_bill', formValues.eway_bill);
-      formData.append('drn', formValues.drn);
-      formData.append('invoice_no', formValues.invoice_no);
-      formData.append('invoice_date', formValues.invoice_date); // Correct this line
-  console.log(2)
-      // Make a POST request to the API
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        body: formData,
-      });
-      const data = await response.json();
-      console.log('API response:', data);
- 
-    } catch (error) {
-      // Handle the error here
-      console.error('API request error:', error);
-    }
+      // formData.append('invoice', formValues.invoice);
+      // formData.append('eway_bill', formValues.eway_bill);
+      // formData.append('drn', formValues.drn);
+      // formData.append('invoice_no', formValues.invoice_no);
+      // formData.append('invoice_date', formValues.invoice_date); 
+
   };
 // 1
-const handleChange=(e)=>{
-const newValue=e.target.value;
-if(Number(newValue)<=conditionInput){
-setInputValue(newValue)
-setGrandTotal1 ( lineItem.reduce((accumulator, item) => {
-  const productPrice = item.product_price;
-  const total = productPrice * inputValue;
-  const gst = (total * 18) / 100;
-  return accumulator + (total + gst);
-}, 0))
-}
-else{
-  alert('Input must be less than pending qty')
-}
-}
+const handleChange = (e) => {
+  const newValue = e.target.value;
+  if (Number(newValue) <= conditionInput) {
+    setInputValue(newValue);
+
+    const updatedTotalAmount = lineItem.reduce((total, item) => {
+      const productPrice = item.product_price;
+      const total1 = productPrice * newValue; // Use newValue from the input
+      const gst1 = (total1 * 18) / 100;
+      const grandTotal1 = total1 + gst1;
+      return total + grandTotal1;
+    }, 0).toFixed(2);
+
+    setTotalAmount(updatedTotalAmount);
+  } else {
+    alert('Input must be less than pending qty');
+  }
+};
+
 // 2
-const handleChange2=(e)=>{
-  const newValue=e.target.value;
-if(Number(newValue)<=conditionInput){
+const handleChange2 = (e) => {
+  const newValue = e.target.value;
+  if (Number(newValue) <= conditionInput) {
+    setInputValue2(newValue);
 
-setInputValue2(newValue)
-setGrandTotal2( lineItem.reduce((accumulator, item) => {
-  const productPrice = item.product_price;
-  const total = productPrice * inputValue2;
-  const gst = (total * 18) / 100;
-  return accumulator + (total + gst);
-}, 0))
-}
-else{
-  alert('Input must be less than pending qty')
-}
-}
+    const updatedTotalAmount = lineItem.reduce((total, item) => {
+      const productPrice = item.product_price;
+      const total2 = productPrice * newValue; // Use newValue from the input
+      const gst2 = (total2 * 18) / 100;
+      const grandTotal2 = total2 + gst2;
+      return total + grandTotal2;
+    }, 0).toFixed(2);
+
+    setTotalAmount2(updatedTotalAmount);
+  } else {
+    alert('Input must be less than pending qty');
+  }
+};
+
 // 3
-const handleChange3=(e)=>{
-  const newValue=e.target.value;
-if(Number(newValue)<=conditionInput){
+const handleChange3 = (e) => {
+  const newValue = e.target.value;
+  if (Number(newValue) <= conditionInput) {
+    setInputValue3(newValue);
 
-setInputValue3(newValue)
-setGrandTotal3( lineItem.reduce((accumulator, item) => {
-  const productPrice = item.product_price;
-  const total = productPrice * inputValue3;
-  const gst = (total * 18) / 100;
-  return accumulator + (total + gst);
-}, 0))
-}
-else{
-  alert('Input must be less than pending qty')
-}
-}
+    const updatedTotalAmount = lineItem.reduce((total, item) => {
+      const productPrice = item.product_price;
+      const total3 = productPrice * newValue; // Use newValue from the input
+      const gst3 = (total3 * 18) / 100;
+      const grandTotal3 = total3 + gst3;
+      return total + grandTotal3;
+    }, 0).toFixed(2);
 
-// Calculate the grand total for input value 1
-
-
-// Calculate the grand total for input value 2
-
-
-// Calculate the grand total for input value 3
-
-
-// Set the grand total states
-// setGrandTotal1(grandTotal1.toFixed(2));
-// setGrandTotal2(grandTotal2.toFixed(2));
-// setGrandTotal3(grandTotal3.toFixed(2));
+    setTotalAmount3(updatedTotalAmount);
+  } else {
+    alert('Input must be less than pending qty');
+  }
+};
 
 
 const updateConditionInput=(item)=>{
@@ -210,7 +221,13 @@ setConditionInput(item)
     setFormValues({ ...formValues, [name]: value });
     console.log(formValues)
   };
+
+  const handleClose = () => {
+    setIsFormVisible(false);
+  };
   
+
+
   return (
     <div>
      <>
@@ -234,7 +251,8 @@ setConditionInput(item)
         {purchaseData.length > 0 && (
           purchaseData.map((item, index) => (
 
-      <div>
+      <div >
+
 
             <div key={index} style={{ display: 'flex', justifyContent: 'space-between', 
             width: "15%" ,marginTop:'30px',marginLeft:"20px"
@@ -265,7 +283,6 @@ Test
     justifyContent: 'space-evenly',
     marginTop: '30px',
     marginBottom: '30px',
-    
     }
   }
   id='drndiv'
@@ -319,9 +336,7 @@ Test
     //   border: "1px solid lightblue",
       borderRadius: '5%',
       fontSize: '17px',
-      
-    
-      textAlign: 'center',
+ textAlign: 'center',
       paddingTop: '30px',
       boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px',
       backgroundColor:'#FFF7CD',
@@ -437,15 +452,13 @@ Test
               <TableRow>
 
                 {lineItem.length>0&&(lineItem.map((item,index)=>{
-                     const productPrice = item.product_price;
-                     const quantity = item.quantity;
-                     const total = productPrice * inputValue;
-                     const gst = (total * 18) / 100;
-                     const grandTotal=total+gst;
-                    //  const updatedGrandTotalArray = [...grandTotalArray];
-                    //  updatedGrandTotalArray[index] = grandTotal;
-                    //  setGrandTotalArray(updatedGrandTotalArray);
-        
+                    //  const productPrice = item.product_price;
+                    //  const quantity = item.quantity;
+                    //  const total = productPrice * inputValue;
+                    //  const gst = (total * 18) / 100;
+                    //  const grandTotal1=total+gst;
+                    //  const calculatedTotal = grandTotal1.toFixed(2);
+
                   return (
 <>
 <TableCell component="th" scope="row">        
@@ -485,7 +498,14 @@ Test
                      </TableCell>
                      <TableCell component="th" scope="row">
                      {/* { item.total_price} */}
-                     {grandTotal.toFixed(2)}
+                     {/* {grandTotal1.toFixed(2)} */}
+                     {totalAmount}
+              
+                   {/* < MyComponent
+     grandTotal={grandTotal1.toFixed(2)}
+      handleTotalAmount={grandTotal1.toFixed(2)}
+    /> */}
+
                      </TableCell>
 </>
                   )
@@ -496,11 +516,11 @@ Test
                 <TableRow>
 
 {lineItem.length>0&&(lineItem.map((item,index)=>{
-     const productPrice = item.product_price;
-     const quantity = item.quantity;
-     const total = productPrice * inputValue2;
-     const gst = (total * 18) / 100;
-     const grandTotal2=total+gst
+    //  const productPrice = item.product_price;
+    //  const quantity = item.quantity;
+    //  const total = productPrice * inputValue2;
+    //  const gst = (total * 18) / 100;
+    //  const grandTotal2=total+gst
   return (
 <>
 <TableCell component="th" scope="row">        
@@ -540,7 +560,8 @@ onChange={handleChange2}
      </TableCell>
      <TableCell component="th" scope="row">
      {/* { item.total_price} */}
-     {grandTotal2.toFixed(2)}
+     {/* {grandTotal2.toFixed(2)} */}
+     {totalAmount2}
      </TableCell>
 </>
   )
@@ -554,7 +575,6 @@ onChange={handleChange2}
      const quantity = item.quantity;
      const total = productPrice * inputValue3;
      const gst = (total * 18) / 100;
-  
      const grandTotal3=total+gst
      
   return (
@@ -595,16 +615,42 @@ onChange={handleChange3}
      </TableCell>
      <TableCell component="th" scope="row">
      {/* { item.total_price} */}
-     {grandTotal3.toFixed(2)}
+     {/* {grandTotal3.toFixed(2)} */}
+     {totalAmount3}
      </TableCell>
 </>
   )
 }))}
 </TableRow>
-<h5>Total of GrandTotals: {(grandTotal1) + (grandTotal2) + (grandTotal3)}</h5>
 
+ {/* total calculation tablerow */}
+<TableRow>
+          <TableCell colSpan={3}><h5>Total of GrandTotals:</h5></TableCell>
+          <TableCell colSpan={1}>
+            <h5>
+            {lineItem.length > 0 &&
+              lineItem.reduce((total, item) => {
+                const productPrice = item.product_price;
+                const total1 = productPrice * inputValue;
+                const gst1 = (total1 * 18) / 100;
+                const grandTotal1 = total1 + gst1;
+
+                const total2 = productPrice * inputValue2;
+                const gst2 = (total2 * 18) / 100;
+                const grandTotal2 = total2 + gst2;
+
+                const total3 = productPrice * inputValue3;
+                const gst3 = (total3 * 18) / 100;
+                const grandTotal3 = total3 + gst3;
+
+                return total + grandTotal1 + grandTotal2 + grandTotal3;
+              }, 0).toFixed(2)}
+            </h5>
+           
+          </TableCell>
+        </TableRow>
                </> 
-               
+               {/* <h5>Total of GrandTotals: {(Number(grandTotal1)) + (Number(grandTotal2)) + (Number(grandTotal3))}</h5>  */}
         </TableBody>
         </Table>
 
@@ -615,14 +661,46 @@ onChange={handleChange3}
           style={{
             marginBottom:'25px',marginLeft:'40%',marginTop:'25px'
           }}
-          onClick={toggleFormVisibility}
+          onClick={() => {
+            if (
+              lineItem.length > 0 &&
+              lineItem.reduce((total, item) => {
+                const productPrice = item.product_price;
+                const total1 = productPrice * inputValue;
+                const gst1 = (total1 * 18) / 100;
+                const grandTotal1 = total1 + gst1;
+        
+                const total2 = productPrice * inputValue2;
+                const gst2 = (total2 * 18) / 100;
+                const grandTotal2 = total2 + gst2;
+        
+                const total3 = productPrice * inputValue3;
+                const gst3 = (total3 * 18) / 100;
+                const grandTotal3 = total3 + gst3;
+        
+                return total + grandTotal1 + grandTotal2 + grandTotal3;
+              }, 0) !== 0
+            ) {
+              toggleFormVisibility(); // Open the form
+            } else {
+              alert("Total amount must not be 0");
+            }
+          }}
         >
           {isFormVisible ? 'Hide Form' : 'Show Form'}
         </Button>
 
+      
         {isFormVisible && (
+            <Dialog open={isFormVisible} onClose={handleClose}>
+            <DialogTitle
+            style={{
+              color:'#2065D1',     
+ }}
+            >Form</DialogTitle>
+            <DialogContent>
         <form onSubmit={handleSubmit} style={{ marginTop: '25px', marginBottom: '25px',display:'flex',
-        flexDirection:"column" ,width:'40%,',marginLeft:'25%'}}>
+        flexDirection:"column" ,width:'40%,'}}>
               {/* Input box 1 */}
               <FormControl required>
         <div style={{
@@ -630,19 +708,19 @@ onChange={handleChange3}
           flexDirection:'row',
           marginBottom:'20px'
         }}>
-          <p
+          <h5
           style={{
             marginTop:'15px',
         marginRight:'20px',
         
           }}
-          >invoice:</p>
+          >Invoice:</h5>
                 <TextField 
                     name="invoice"
                     value={formValues.invoice}
                     onChange={handleInputChange}
                    
-                placeholder="Input 1" type='file' style={{marginLeft:'30px'}}/>
+                placeholder="Input 1" type='file' style={{marginLeft:'40px'}}/>
                 </div>
               </FormControl>
         
@@ -653,18 +731,18 @@ onChange={handleChange3}
           flexDirection:'row',
           marginBottom:'20px'
         }}>
-           <p
+           <h5
           style={{
             marginTop:'15px',
         marginRight:'20px'
           }}
-          >E-Way Bill</p>
+          >E-Way Bill :</h5>
                 <TextField placeholder="Input 2" type='file'
                     name="eway_bill"
                     value={formValues.eway_bill}
                     onChange={handleInputChange}
               
-                style={{marginLeft:'12px'}}/>
+                style={{marginLeft:'8px'}}/>
                 </div>
               </FormControl>
         
@@ -675,12 +753,12 @@ onChange={handleChange3}
           flexDirection:'row',
           marginBottom:'20px'
         }}>
-           <p
+           <h5
           style={{
             marginTop:'15px',
         marginRight:'20px'
           }}
-          >Upload GRN</p>
+          >Upload GRN :</h5>
                 <TextField placeholder="Input 3" type='file'
                    name="drn"
                    value={formValues.drn}
@@ -696,13 +774,13 @@ onChange={handleChange3}
           flexDirection:'row',
           marginBottom:'20px'
         }}>
-           <p
+           <h5
           style={{
             marginTop:'15px',
         marginRight:'20px'
           }}
-          >invoice no:</p>
-                <TextField placeholder="Input 4"
+          >Invoice No:</h5>
+                <TextField placeholder="Invoice No"
                    name="invoice_no"
                    value={formValues.invoice_no}
                    onChange={handleInputChange}
@@ -718,34 +796,33 @@ onChange={handleChange3}
           flexDirection:'row',
           marginBottom:'20px'
         }}>
-           <p
+           <h5
           style={{
         
             marginTop:'15px',
         marginRight:'20px'
           }}
-          >invoice Date:</p>
+          >Invoice Date:</h5>
                 <TextField placeholder="Input 5" type='date'
                    name="invoice_date"
                    value={formValues.invoice_date }
                    onChange={handleInputChange}
-                style={{marginLeft:'0px',width:'365px'}}/>
+                style={{marginLeft:'-5px',width:'365px'}}/>
                 </div>
               </FormControl>
-        
-        
-              <Button type="submit" variant="contained" color="primary" style={{marginLeft:'25%',width:'150px'}}>
+              <Button type="submit" variant="contained" color="primary" style={{marginLeft:'40%',width:'150px'}}>
                 Submit
               </Button>
             </form>
-        )}
-
-
-       
+            </DialogContent>
+      </Dialog>
+        )}  
         </TableContainer>
        
         </Card>
         </>
+        {/* footer */}
+        <Footer/>
     </div>
   )
 }

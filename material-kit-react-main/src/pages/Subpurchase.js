@@ -20,8 +20,9 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import DescriptionIcon from '@mui/icons-material/Description';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuthContext } from './AuthProvider';
+import { Footer } from './Footer';
 
 
 
@@ -35,14 +36,20 @@ export const Subpurchase = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [drnlist,setDrnList]=useState([])
-  const [dataVisible, setDataVisible] = useState(true);
-  const [drnVisible, setDrnVisible] = useState(true);
+  const [dataVisible, setDataVisible] = useState(false);
+  const [drnVisible, setDrnVisible] = useState(false);
+  const navigate=useNavigate()
   const {orders,setOrders}=useAuthContext()
   const {setPurchaseData}=useAuthContext()
+
 
 //  console.log("drndata",purchaseData)
 
   useEffect(() => {
+    if (!sessionStorage.getItem('token')) {
+      // Redirect to the login page if the token is not present
+      navigate('/login')}
+      else{
     const fetchData = async () => {
       try {
         const storedPurchaseId = localStorage.getItem('purchaseId');
@@ -94,7 +101,7 @@ console.log(products)
     };
 
     fetchData();
-  }, [purchaseId,orders,setOrders,setPurchaseData]);
+  }}, [purchaseId,orders,setOrders,setPurchaseData]);
   
 //   drn search
 const handlePageChange = (event, newPage) => {
@@ -668,6 +675,8 @@ style={{
                </TableContainer>
 </div>
     </Card>
+    {/* footer  */}
+<Footer/>
     </>
   );
 };

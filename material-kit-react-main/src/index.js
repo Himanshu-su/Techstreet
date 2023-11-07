@@ -1,3 +1,6 @@
+import 'bootstrap/dist/css/bootstrap.css';
+// Put any other imports below so that CSS from your
+// components takes precedence over default styles.
 import ReactDOM from 'react-dom/client';
 
 //
@@ -9,7 +12,10 @@ import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 // localStorage.removeItem('token');
-root.render(<App />);
+root.render(
+
+<App />
+);
 
 // If you want to enable client cache, register instead.
 serviceWorker.unregister();

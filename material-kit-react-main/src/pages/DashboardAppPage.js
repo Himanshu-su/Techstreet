@@ -32,45 +32,26 @@ import {
 // ----------------------------------------------------------------------
 
 export default function DashboardAppPage() {
+  const [toastShown, setToastShown] = useState(false);
   const theme = useTheme();
   const navigate=useNavigate()
   // const [auth,setAuth]=useState(false)
 
   sessionStorage.getItem("token")
 
-//   useEffect(()=>{
-//     if(!localStorage.getItem("token")){
-//       navigate("/login")
-//       // setAuth(true)
-//     }
 
+  useEffect(() => {
+    if (!sessionStorage.getItem('token')) {
+      // Redirect to the login page if the token is not present
+      navigate('/login');
+    } else if (!toastShown) {
+      // Display the success message
+      toast.success('Nice');
+      // Set the flag to indicate that the message has been shown
+      setToastShown(true);
+    }
+  }, [navigate, toastShown]);
 
-
-// else {
-//   localStorage.getItem("token")
-// toast.success("nice")
-// }
-
-//   },[])
-
-useEffect(() => {
-  // const token = localStorage.getItem('token');
-
-  if (!sessionStorage.getItem('token')) {
-    // Redirect to the login page if the token is not present
-    navigate('/login');
-  } else {
-    // If the token is present, you can display a success message
-    toast.success('Nice');
-  }
-}, []);
-
-
-
-  // useEffect(()=>{ 
-  //   toast.success("success login")
-  // },[])
-  
 
 
   return (
