@@ -34,25 +34,21 @@ import {
 export default function DashboardAppPage() {
   const [toastShown, setToastShown] = useState(false);
   const theme = useTheme();
-  const navigate=useNavigate()
-  // const [auth,setAuth]=useState(false)
-
-  sessionStorage.getItem("token")
-
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!sessionStorage.getItem('token')) {
       // Redirect to the login page if the token is not present
       navigate('/login');
-    } else if (!toastShown && localStorage.getItem('toastShown') !== 'true') {
+    } else if (!toastShown && !sessionStorage.getItem('toastShown')) {
       // Display the success message
       toast.success('Nice');
-      // Set the flag in localStorage to indicate that the message has been shown
-      localStorage.setItem('toastShown', 'true');
+      // Set the flag in sessionStorage to indicate that the message has been shown
+      sessionStorage.setItem('toastShown', 'true');
       // Set the flag in the component's state as well
       setToastShown(true);
     }
-  }, []);
+  }, [navigate, toastShown]);
 
 
   return (

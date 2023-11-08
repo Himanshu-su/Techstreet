@@ -1,3 +1,6 @@
+
+
+// github updated code 
    
 
 import React, { useEffect, useState } from 'react'
@@ -54,6 +57,9 @@ export const Drnlist = () => {
   const [totalAmount2, setTotalAmount2] = useState(0);
   const [totalAmount3, setTotalAmount3] = useState(0);
   const [idlineItemArray,setIdlineItemArray]=useState(0)
+  const [subsidiaryId,setSubsidiaryId]=useState('')
+  const [locationId,setLocationId]=useState('')
+  const [poId,setPoId]=useState('')
 
    const  token = sessionStorage.getItem("token"); 
   // const token='107|UcKUUoV1lBraUd87wpOFaYRh3VIyCqK0rvoQHXxN'
@@ -71,7 +77,10 @@ export const Drnlist = () => {
   });
     
   const { orderUrl, setOrderUrl, purchaseData, setPurchaseData } = useAuthContext();
-console.log(lineItem)
+console.log(`line_item${lineItem}`)
+console.log(`subsidiary_id:${subsidiaryId}`)
+console.log(`location_id:${locationId}`)
+console.log(`poid:${poId}`)
 // console.log(conditionInput)
 
 useEffect(() => {
@@ -91,6 +100,9 @@ useEffect(() => {
         if (parsedData.length > 0) {
           // Retrieve the line_items from the first item in purchaseData
           setLineItem(parsedData[0].line_items);
+          setSubsidiaryId(parsedData[0].subsidiary_id)
+          setLocationId(parsedData[0].location_id)
+          setPoId(parsedData[0].id)
           setConditionInput(parsedData[0].line_items[0].outstandingQuantity)
           setIdlineItemArray(parsedData[0].line_items[0].id)
         }
@@ -120,62 +132,120 @@ useEffect(() => {
     setIsFormVisible(!isFormVisible);
   };
 
+//   const handleSubmit = async (e) => {
+//     e.preventDefault(); // Prevent the default form submission behavior
+  
+//     // Create a data object with the form values
+    
+//     // const data = {
+//     //   subsidiary_id: '10',
+//     //   location_id: '54',
+//     //   po_id: '1420',
+//     //   invoice_no: formValues.invoice_no, // Use the invoice_no from the form
+//     //   invoice_date: formValues.invoice_date, // Use the invoice_date from the form
+//     //   items: JSON.stringify([
+//     //     {
+//     //       item_id: idlineItemArray, // Use the item_id from your state or wherever it's coming from
+//     //       qty: inputValue, // Use the quantity input value
+//     //       amount: totalAmount, // Use the total amount value
+//     //     }
+//     //   ])
+//     // };
 
-  const handleSubmit = async (e) => {
- 
+//     // Create a new FormData instance
+// const formData = new FormData();
+
+// // Append the simple key-value pairs
+// formData.append('subsidiary_id', subsidiaryId);
+// formData.append('location_id', locationId);
+// formData.append('po_id', poId);
+// formData.append('invoice_no', formValues.invoice_no); // Use the invoice_no from the form
+// formData.append('invoice_date', formValues.invoice_date); // Use the invoice_date from the form
+// // Stringify the array and append it as a single value
+
+// // Append any file inputs
+// formData.append('invoice', formValues.input); // Use your file input variable for 'file1'
+// formData.append('eway_bill', formValues.eway_bill);
+// formData.append('drn',formValues.drn)
+// // Use your file input variable for 'file2'
+// // Create an array of items as an object
+
+// const items = [
+//   {
+//     item_id: idlineItemArray, // Use the item_id from your state or wherever it's coming from
+//     qty: inputValue, // Use the quantity input value
+//     amount: totalAmount, // Use the total amount value
+//   }
+// ];
+
+// formData.append('items', JSON.stringify(items));
+    
+//     try {
+//       const response = await axios.post(
+//         'https://dev.techstreet.in/vmsglen/public/api/delivery',
+//         formData, // Use the data object with all the required values
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//             'Content-Type': 'application/json',
+//           },
+//         }
+//       );
+//       // setSubsidiaryId('')
+//       // setLocationId('')
+//       // setPoId('')
+
+//       // setFormValues({ ...formValues });
+//       console.log(response.data);
+//     } catch (error) {
+//       console.error('Error sending the request:', error);
+//     }
+//   };
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  const formData = new FormData();
+  formData.append('subsidiary_id', subsidiaryId);
+  formData.append('location_id', locationId);
+  formData.append('po_id', poId);
+//   formData.append('invoice', formValues.input); // Use your file input variable for 'file1'
+// formData.append('eway_bill', formValues.eway_bill);
+// formData.append('drn',formValues.drn)
+formData.append('invoice', formValues.invoice); // Use your file input variable for 'invoice'
+formData.append('eway_bill', formValues.eway_bill);
+formData.append('drn', formValues.drn);
+
+  formData.append('invoice_no', formValues.invoice_no);
+  formData.append('invoice_date', formValues.invoice_date);
+
+  const items = [
+    {
+      item_id: idlineItemArray,
+      qty: inputValue,
+      amount: totalAmount,
+    }
+  ];
+
+  formData.append('items', JSON.stringify(items));
+
+  try {
     const response = await axios.post(
-
-//    subsidiary_id: '10',
-        // location_id: '54',
-        // po_id: '6',  
-        // invoice_no: '1211',
-        // invoice_date: '2023-09-05',
-        // // invoice: formValues.invoice,
-        // // eway_bill: formValues.eway_bill,
-        // // drn: formValues.drn,
-        // items: [
-        //   {
-        //     item_id: idlineItemArray,
-        //     qty: inputValue,
-        //     amount: totalAmount,
-        //   },
-        
-        // ],
-        // postman
-        // headers: {
-        //   Authorization: `Bearer ${token}`,
-        // },
-        // params: {
-        //   "subsidiary_id":"10","location_id":"54","po_id":"1420","invoice_no":"1211",
-        //   "invoice_date":"2023-09-05","items":"[{\"item_id\":\"8582\",\"qty\":\"2000\",\"amount\":\"239.75\"}]"
-        // },
-
-
       'https://dev.techstreet.in/vmsglen/public/api/delivery',
-      {
-        subsidiary_id: '10',
-        location_id: '54',
-        po_id: '1420',
-        invoice_no: '1211',
-        invoice_date: '2023-09-05',
-        items: [
-          {
-            item_id: '8582',
-            qty: '2000',
-            amount: '239.75',
-          },
-        ],
-      },
+      formData,
       {
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json', // Set the Content-Type header
+          'Content-Type': 'multipart/form-data', // Make sure to set the content type to multipart/form-data
         },
       }
     );
-    
-    console.log(response.data)
+    console.log(response.data);
+  } catch (error) {
+    console.error('Error sending the request:', error);
   }
+};
+
 
   
       // Add input values to the FormData object
@@ -256,6 +326,10 @@ setConditionInput(item)
     setFormValues({ ...formValues, [name]: value });
     console.log(formValues)
   };
+  const handleFileInputChange = (e, fieldName) => {
+  const file = e.target.files[0]; // Get the selected file
+  setFormValues({ ...formValues, [fieldName]: file });
+};
 
   const handleClose = () => {
     setIsFormVisible(false);
@@ -525,7 +599,7 @@ Test
                      </TableCell>
                      <TableCell component="th" scope="row">
             <TextField
-            value={inputValue}
+            value={inputValue.toString()}
             onChange={handleChange}
           
             />
@@ -587,7 +661,7 @@ Test
      </TableCell>
      <TableCell component="th" scope="row">
 <TextField
-value={inputValue2}
+value={inputValue2.toString()}
 onChange={handleChange2}
 
 />
@@ -642,7 +716,7 @@ onChange={handleChange2}
      </TableCell>
      <TableCell component="th" scope="row">
 <TextField
-value={inputValue3}
+value={inputValue3.toString()}
 onChange={handleChange3}
 
 />
@@ -753,7 +827,7 @@ onChange={handleChange3}
                 <TextField 
                     name="invoice"
                     value={formValues.invoice}
-                    onChange={handleInputChange}
+                    // onChange={(e) => handleFileInputChange(e, 'invoice')}
                    
                 placeholder="Input 1" type='file' style={{marginLeft:'40px'}}/>
                 </div>
@@ -773,9 +847,12 @@ onChange={handleChange3}
           }}
           >E-Way Bill :</h5>
                 <TextField placeholder="Input 2" type='file'
+                
+              
+                  
                     name="eway_bill"
                     value={formValues.eway_bill}
-                    onChange={handleInputChange}
+                    // onChange={(e) => handleFileInputChange(e, 'eway_bill')}
               
                 style={{marginLeft:'8px'}}/>
                 </div>
@@ -797,7 +874,7 @@ onChange={handleChange3}
                 <TextField placeholder="Input 3" type='file'
                    name="drn"
                    value={formValues.drn}
-                   onChange={handleInputChange}
+                  //  onChange={(e) => handleFileInputChange(e, 'drn')}
                 style={{marginLeft:'-5px'}}/>
                 </div>
               </FormControl>
@@ -818,7 +895,7 @@ onChange={handleChange3}
                 <TextField placeholder="Invoice No"
                    name="invoice_no"
                    value={formValues.invoice_no}
-                   onChange={handleInputChange}
+                  //  onChange={(e)=>handleInputChange(e, 'invoice_no')}
                 style={{marginLeft:'10px',width:'365px'}}/>
                 </div>
               </FormControl>
@@ -841,7 +918,7 @@ onChange={handleChange3}
                 <TextField placeholder="Input 5" type='date'
                    name="invoice_date"
                    value={formValues.invoice_date }
-                   onChange={handleInputChange}
+                   onChange={(e)=>handleInputChange(e, 'invoice_date')}
                 style={{marginLeft:'-5px',width:'365px'}}/>
                 </div>
               </FormControl>
