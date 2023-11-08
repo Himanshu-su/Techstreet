@@ -1,3 +1,5 @@
+   
+
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import { Typography, Card, Button,Container,
@@ -28,6 +30,7 @@ import VerifiedIcon from '@mui/icons-material/Verified';
  import { Label } from '@mui/icons-material';
 import { useAuthContext } from './AuthProvider';
 import { Footer } from './Footer';
+// import { object } from 'prop-types';
 // import { HelperText } from '@mui/icons-material';
 
   // const useStyles = makeStyles((theme) => ({
@@ -44,14 +47,17 @@ export const Drnlist = () => {
 
   const [lineItem,setLineItem]=useState([])
   const [isFormVisible, setIsFormVisible] = useState(false);
-  const [inputValue, setInputValue]=useState(null)
-  const [inputValue2,setInputValue2]=useState(null)
-  const [inputValue3,setInputValue3]=useState(null)
+  const [inputValue, setInputValue]=useState('')
+  const [inputValue2,setInputValue2]=useState('')
+  const [inputValue3,setInputValue3]=useState('')
   const [totalAmount, setTotalAmount] = useState(0);
   const [totalAmount2, setTotalAmount2] = useState(0);
   const [totalAmount3, setTotalAmount3] = useState(0);
   const [idlineItemArray,setIdlineItemArray]=useState(0)
 
+   const  token = sessionStorage.getItem("token"); 
+  // const token='107|UcKUUoV1lBraUd87wpOFaYRh3VIyCqK0rvoQHXxN'
+  
  
   
   const [conditionInput,setConditionInput]=useState('')
@@ -117,31 +123,60 @@ useEffect(() => {
 
   const handleSubmit = async (e) => {
  
-    try {
-      const response = await axios.post('https://vms.glenindia.com/api/delivery/', {
-        subsidiary_id: 1,
-        location_id: 54,
-        po_id: '232451-001552',  
-        invoice_no: formValues.invoice_no,
-        invoice_date: formValues.invoice_date,
-        invoice:formValues.invoice ,
-        eway_bill: formValues.eway_bill,
-        drn: formValues.drn,
+    const response = await axios.post(
+
+//    subsidiary_id: '10',
+        // location_id: '54',
+        // po_id: '6',  
+        // invoice_no: '1211',
+        // invoice_date: '2023-09-05',
+        // // invoice: formValues.invoice,
+        // // eway_bill: formValues.eway_bill,
+        // // drn: formValues.drn,
+        // items: [
+        //   {
+        //     item_id: idlineItemArray,
+        //     qty: inputValue,
+        //     amount: totalAmount,
+        //   },
+        
+        // ],
+        // postman
+        // headers: {
+        //   Authorization: `Bearer ${token}`,
+        // },
+        // params: {
+        //   "subsidiary_id":"10","location_id":"54","po_id":"1420","invoice_no":"1211",
+        //   "invoice_date":"2023-09-05","items":"[{\"item_id\":\"8582\",\"qty\":\"2000\",\"amount\":\"239.75\"}]"
+        // },
+
+
+      'https://dev.techstreet.in/vmsglen/public/api/delivery',
+      {
+        subsidiary_id: '10',
+        location_id: '54',
+        po_id: '1420',
+        invoice_no: '1211',
+        invoice_date: '2023-09-05',
         items: [
           {
-            item_id: idlineItemArray,
-            qty: inputValue,
-            amount: totalAmount,
+            item_id: '8582',
+            qty: '2000',
+            amount: '239.75',
           },
-        
         ],
-      });
-  
-      console.log(response.data);
-      console.log(1) // Handle the response from the server
-    } catch (error) {
-      console.error('Error making the POST request:', error);
-    }
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json', // Set the Content-Type header
+        },
+      }
+    );
+    
+    console.log(response.data)
+  }
+
   
       // Add input values to the FormData object
       // formData.append('invoice', formValues.invoice);
@@ -150,7 +185,7 @@ useEffect(() => {
       // formData.append('invoice_no', formValues.invoice_no);
       // formData.append('invoice_date', formValues.invoice_date); 
 
-  };
+  
 // 1
 const handleChange = (e) => {
   const newValue = e.target.value;

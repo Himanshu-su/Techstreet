@@ -44,14 +44,15 @@ export default function DashboardAppPage() {
     if (!sessionStorage.getItem('token')) {
       // Redirect to the login page if the token is not present
       navigate('/login');
-    } else if (!toastShown) {
+    } else if (!toastShown && localStorage.getItem('toastShown') !== 'true') {
       // Display the success message
       toast.success('Nice');
-      // Set the flag to indicate that the message has been shown
+      // Set the flag in localStorage to indicate that the message has been shown
+      localStorage.setItem('toastShown', 'true');
+      // Set the flag in the component's state as well
       setToastShown(true);
     }
-  }, [navigate, toastShown]);
-
+  }, []);
 
 
   return (
