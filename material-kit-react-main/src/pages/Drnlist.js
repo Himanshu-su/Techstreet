@@ -77,10 +77,10 @@ export const Drnlist = () => {
   });
     
   const { orderUrl, setOrderUrl, purchaseData, setPurchaseData } = useAuthContext();
-console.log(`line_item${lineItem}`)
-console.log(`subsidiary_id:${subsidiaryId}`)
-console.log(`location_id:${locationId}`)
-console.log(`poid:${poId}`)
+// console.log(`line_item${lineItem}`)
+// console.log(`subsidiary_id:${subsidiaryId}`)
+// console.log(`location_id:${locationId}`)
+// console.log(`poid:${poId}`)
 // console.log(conditionInput)
 
 useEffect(() => {
@@ -225,6 +225,7 @@ formData.append('drn', formValues.drn);
       qty: inputValue,
       amount: totalAmount,
     }
+    
   ];
 
   formData.append('items', JSON.stringify(items));
@@ -236,7 +237,7 @@ formData.append('drn', formValues.drn);
       {
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data', // Make sure to set the content type to multipart/form-data
+          'Content-Type': 'multipart/form-data', 
         },
       }
     );
@@ -245,7 +246,14 @@ formData.append('drn', formValues.drn);
     console.error('Error sending the request:', error);
   }
 };
-
+const handleInputChange = (e, fieldName) => {
+  const { value } = e.target;
+  setFormValues({ ...formValues, [fieldName]: value });
+};
+const handleFileInputChange = (e, fieldName) => {
+const file = e.target.files[0]; // Get the selected file
+setFormValues({ ...formValues, [fieldName]: file });
+};
 
   
       // Add input values to the FormData object
@@ -317,19 +325,11 @@ const handleChange3 = (e) => {
 };
 
 
-const updateConditionInput=(item)=>{
-setConditionInput(item)
-}
+// const updateConditionInput=(item)=>{
+// setConditionInput(item)
+// }
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormValues({ ...formValues, [name]: value });
-    console.log(formValues)
-  };
-  const handleFileInputChange = (e, fieldName) => {
-  const file = e.target.files[0]; // Get the selected file
-  setFormValues({ ...formValues, [fieldName]: file });
-};
+ 
 
   const handleClose = () => {
     setIsFormVisible(false);
@@ -826,8 +826,8 @@ onChange={handleChange3}
           >Invoice:</h5>
                 <TextField 
                     name="invoice"
-                    value={formValues.invoice}
-                    // onChange={(e) => handleFileInputChange(e, 'invoice')}
+                    // value={formValues.invoice}
+                     onChange={(e) => handleFileInputChange(e, 'invoice')}
                    
                 placeholder="Input 1" type='file' style={{marginLeft:'40px'}}/>
                 </div>
@@ -851,8 +851,8 @@ onChange={handleChange3}
               
                   
                     name="eway_bill"
-                    value={formValues.eway_bill}
-                    // onChange={(e) => handleFileInputChange(e, 'eway_bill')}
+                    // value={formValues.eway_bill}
+                     onChange={(e) => handleFileInputChange(e, 'eway_bill')}
               
                 style={{marginLeft:'8px'}}/>
                 </div>
@@ -873,8 +873,8 @@ onChange={handleChange3}
           >Upload GRN :</h5>
                 <TextField placeholder="Input 3" type='file'
                    name="drn"
-                   value={formValues.drn}
-                  //  onChange={(e) => handleFileInputChange(e, 'drn')}
+                  //  value={formValues.drn}
+                    onChange={(e) => handleFileInputChange(e, 'drn')}
                 style={{marginLeft:'-5px'}}/>
                 </div>
               </FormControl>
@@ -895,7 +895,7 @@ onChange={handleChange3}
                 <TextField placeholder="Invoice No"
                    name="invoice_no"
                    value={formValues.invoice_no}
-                  //  onChange={(e)=>handleInputChange(e, 'invoice_no')}
+                    onChange={(e)=>handleInputChange(e, 'invoice_no')}
                 style={{marginLeft:'10px',width:'365px'}}/>
                 </div>
               </FormControl>
