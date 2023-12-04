@@ -56,10 +56,18 @@ export const Drnlist = () => {
   const [totalAmount, setTotalAmount] = useState(0);
   const [totalAmount2, setTotalAmount2] = useState(0);
   const [totalAmount3, setTotalAmount3] = useState(0);
+  const [isInvoiceValid, setIsInvoiceValid] = useState(true);
+  const [isInvoiceNoValid, setIsInvoiceNoValid] = useState(true);
+  const [isInvoiceDateValid, setIsInvoiceDateValid] = useState(true);
+  const [showGRNErrorMessage, setShowGRNErrorMessage] = useState(false);
+
+  const [isDRNValid, setIsDRNValid] = useState(true);
+  const [grandTotal, setGrandTotal] = useState(0);
   const [idlineItemArray,setIdlineItemArray]=useState(0)
   const [subsidiaryId,setSubsidiaryId]=useState('')
   const [locationId,setLocationId]=useState('')
   const [poId,setPoId]=useState('')
+
 
    const  token = sessionStorage.getItem("token"); 
   // const token='107|UcKUUoV1lBraUd87wpOFaYRh3VIyCqK0rvoQHXxN'
@@ -112,6 +120,31 @@ useEffect(() => {
     }
   }, [setPurchaseData,setLineItem]);
 
+  // grandtotal of drn
+  useEffect(() => {
+    if (lineItem.length > 0) {
+      const newGrandTotal = lineItem.reduce((total, item) => {
+        const productPrice = item.product_price;
+        const total1 = productPrice * inputValue;
+        const gst1 = (total1 * 18) / 100;
+        const grandTotal1 = total1 + gst1;
+  
+        const total2 = productPrice * inputValue2;
+        const gst2 = (total2 * 18) / 100;
+        const grandTotal2 = total2 + gst2;
+  
+        const total3 = productPrice * inputValue3;
+        const gst3 = (total3 * 18) / 100;
+        const grandTotal3 = total3 + gst3;
+  
+        return total + grandTotal1 + grandTotal2 + grandTotal3;
+      }, 0).toFixed(2);
+  
+      setGrandTotal(newGrandTotal);
+    }
+  }, [lineItem, inputValue, inputValue2, inputValue3]);
+  
+
 
   // formDate
   function formatDateWithAMPM(dateString) {
@@ -132,78 +165,40 @@ useEffect(() => {
     setIsFormVisible(!isFormVisible);
   };
 
-//   const handleSubmit = async (e) => {
-//     e.preventDefault(); // Prevent the default form submission behavior
-  
-//     // Create a data object with the form values
-    
-//     // const data = {
-//     //   subsidiary_id: '10',
-//     //   location_id: '54',
-//     //   po_id: '1420',
-//     //   invoice_no: formValues.invoice_no, // Use the invoice_no from the form
-//     //   invoice_date: formValues.invoice_date, // Use the invoice_date from the form
-//     //   items: JSON.stringify([
-//     //     {
-//     //       item_id: idlineItemArray, // Use the item_id from your state or wherever it's coming from
-//     //       qty: inputValue, // Use the quantity input value
-//     //       amount: totalAmount, // Use the total amount value
-//     //     }
-//     //   ])
-//     // };
-
-//     // Create a new FormData instance
-// const formData = new FormData();
-
-// // Append the simple key-value pairs
-// formData.append('subsidiary_id', subsidiaryId);
-// formData.append('location_id', locationId);
-// formData.append('po_id', poId);
-// formData.append('invoice_no', formValues.invoice_no); // Use the invoice_no from the form
-// formData.append('invoice_date', formValues.invoice_date); // Use the invoice_date from the form
-// // Stringify the array and append it as a single value
-
-// // Append any file inputs
-// formData.append('invoice', formValues.input); // Use your file input variable for 'file1'
-// formData.append('eway_bill', formValues.eway_bill);
-// formData.append('drn',formValues.drn)
-// // Use your file input variable for 'file2'
-// // Create an array of items as an object
-
-// const items = [
-//   {
-//     item_id: idlineItemArray, // Use the item_id from your state or wherever it's coming from
-//     qty: inputValue, // Use the quantity input value
-//     amount: totalAmount, // Use the total amount value
-//   }
-// ];
-
-// formData.append('items', JSON.stringify(items));
-    
-//     try {
-//       const response = await axios.post(
-//         'https://dev.techstreet.in/vmsglen/public/api/delivery',
-//         formData, // Use the data object with all the required values
-//         {
-//           headers: {
-//             Authorization: `Bearer ${token}`,
-//             'Content-Type': 'application/json',
-//           },
-//         }
-//       );
-//       // setSubsidiaryId('')
-//       // setLocationId('')
-//       // setPoId('')
-
-//       // setFormValues({ ...formValues });
-//       console.log(response.data);
-//     } catch (error) {
-//       console.error('Error sending the request:', error);
-//     }
-//   };
 
 const handleSubmit = async (e) => {
   e.preventDefault();
+
+  // Validate required fields
+  if (!formValues.invoice) {
+    setIsInvoiceValid(false);
+    return;
+  }
+
+  if (!formValues.invoice_no) {
+    setIsInvoiceNoValid(false);
+    return;
+  }
+
+  if (!formValues.invoice_date) {
+    setIsInvoiceDateValid(false);
+    return;
+  }
+  if (grandTotal > 50000 && !formValues.drn) {
+    // Grand total is greater than 50000, but "Upload GRN" is not filled
+    setIsDRNValid(false);
+    setShowGRNErrorMessage(true);
+    return;
+  }
+
+  // Reset validation states
+  setIsInvoiceValid(true);
+  setIsInvoiceNoValid(true);
+  setIsInvoiceDateValid(true);
+  setIsDRNValid(true);
+  setShowGRNErrorMessage(false);
+
+
 
   const formData = new FormData();
   formData.append('subsidiary_id', subsidiaryId);
@@ -225,7 +220,7 @@ formData.append('drn', formValues.drn);
       qty: inputValue,
       amount: totalAmount,
     }
-    
+
   ];
 
   formData.append('items', JSON.stringify(items));
@@ -737,23 +732,7 @@ onChange={handleChange3}
           <TableCell colSpan={3}><h5>Total of GrandTotals:</h5></TableCell>
           <TableCell colSpan={1}>
             <h5>
-            {lineItem.length > 0 &&
-              lineItem.reduce((total, item) => {
-                const productPrice = item.product_price;
-                const total1 = productPrice * inputValue;
-                const gst1 = (total1 * 18) / 100;
-                const grandTotal1 = total1 + gst1;
-
-                const total2 = productPrice * inputValue2;
-                const gst2 = (total2 * 18) / 100;
-                const grandTotal2 = total2 + gst2;
-
-                const total3 = productPrice * inputValue3;
-                const gst3 = (total3 * 18) / 100;
-                const grandTotal3 = total3 + gst3;
-
-                return total + grandTotal1 + grandTotal2 + grandTotal3;
-              }, 0).toFixed(2)}
+              {grandTotal}
             </h5>
            
           </TableCell>
@@ -811,7 +790,7 @@ onChange={handleChange3}
         <form onSubmit={handleSubmit} style={{ marginTop: '25px', marginBottom: '25px',display:'flex',
         flexDirection:"column" ,width:'40%,'}}>
               {/* Input box 1 */}
-              <FormControl required>
+              {/* <FormControl required>
         <div style={{
           display:'flex',
           flexDirection:'row',
@@ -831,7 +810,36 @@ onChange={handleChange3}
                    
                 placeholder="Input 1" type='file' style={{marginLeft:'40px'}}/>
                 </div>
-              </FormControl>
+              </FormControl> */}
+
+<FormControl required>
+      <div style={{
+        display: 'flex',
+        flexDirection: 'row',
+        marginBottom: '20px'
+      }}>
+        <h5
+          style={{
+            marginTop: '15px',
+            marginRight: '20px'
+          }}
+        >Invoice:</h5>
+        <TextField
+          name="invoice"
+          onChange={(e) => {
+            handleFileInputChange(e, 'invoice');
+            setIsInvoiceValid(!!e.target.files[0]);
+          }}
+          placeholder="Input 1"
+          type='file'
+          style={{ marginLeft: '40px' }}
+        />
+      </div>
+      {/* Error message */}
+      {!isInvoiceValid && (
+        <p style={{ color: 'red',marginLeft:'26%',marginBottom:'20px',marginTop:'-20px' }}>* required</p>
+      )}
+    </FormControl>
         
               {/* Input box 2 */}
               <FormControl required>
@@ -847,10 +855,7 @@ onChange={handleChange3}
           }}
           >E-Way Bill :</h5>
                 <TextField placeholder="Input 2" type='file'
-                
-              
-                  
-                    name="eway_bill"
+  name="eway_bill"
                     // value={formValues.eway_bill}
                      onChange={(e) => handleFileInputChange(e, 'eway_bill')}
               
@@ -859,12 +864,11 @@ onChange={handleChange3}
               </FormControl>
         
               {/* Input box 3 */}
-              <FormControl required>
+              {/* <FormControl required>
               <div style={{
           display:'flex',
           flexDirection:'row',
-          marginBottom:'20px'
-        }}>
+          marginBottom:'20px' }}>
            <h5
           style={{
             marginTop:'15px',
@@ -877,51 +881,105 @@ onChange={handleChange3}
                     onChange={(e) => handleFileInputChange(e, 'drn')}
                 style={{marginLeft:'-5px'}}/>
                 </div>
-              </FormControl>
+              </FormControl> */}
+              {
+    <FormControl required>
+    {/* ... (other form controls) */}
+    
+    <div style={{
+      display: 'flex',
+      flexDirection: 'row',
+      marginBottom: '20px',
+    }}>
+      <h5
+        style={{
+          marginTop: '15px',
+          marginRight: '20px'
+        }}
+      >Upload GRN :</h5>
+      <TextField
+        placeholder="Input 3"
+        type='file'
+        name="drn"
+        onChange={(e) => {
+          handleFileInputChange(e, 'drn');
+          setIsDRNValid(true); // Reset DRN validation state
+          setShowGRNErrorMessage(false); // Hide the error message
+        }}
+        style={{ marginLeft: '-5px' }}
+      />
+    </div>
+    {/* message */}
+    {showGRNErrorMessage && (
+      <p style={{ color: 'red' }}>GRN is required if grand total amount is greater than 50000</p>
+    )}
+
+  </FormControl>
+}
+
         
               {/* Input box 4 */}
               <FormControl required>
-              <div style={{
-          display:'flex',
-          flexDirection:'row',
-          marginBottom:'20px'
-        }}>
-           <h5
+      <div style={{
+        display: 'flex',
+        flexDirection: 'row',
+        marginBottom: '20px',
+      }}>
+        <h5
           style={{
-            marginTop:'15px',
-        marginRight:'20px'
+            marginTop: '15px',
+            marginRight: '20px'
           }}
-          >Invoice No:</h5>
-                <TextField placeholder="Invoice No"
-                   name="invoice_no"
-                   value={formValues.invoice_no}
-                    onChange={(e)=>handleInputChange(e, 'invoice_no')}
-                style={{marginLeft:'10px',width:'365px'}}/>
-                </div>
-              </FormControl>
+        >Invoice No:</h5>
+        <TextField
+          placeholder="Invoice No"
+          name="invoice_no"
+          value={formValues.invoice_no}
+          onChange={(e) => {
+            handleInputChange(e, 'invoice_no');
+            setIsInvoiceNoValid(!!e.target.value);
+          }}
+          style={{ marginLeft: '10px', width: '365px' }}
+        />
+      </div>
+      {/* Error message */}
+      {!isInvoiceNoValid && (
+        <p style={{ color: 'red',marginLeft:'26%',marginBottom:'20px',marginTop:'-20px'}}>* required</p>
+      )}
+    </FormControl>
         
         
               {/* Input box 5 */}
               <FormControl required>
-              <div style={{
-          display:'flex',
-          flexDirection:'row',
-          marginBottom:'20px'
-        }}>
-           <h5
+      <div style={{
+        display: 'flex',
+        flexDirection: 'row',
+        marginBottom: '20px'
+      }}>
+        <h5
           style={{
-        
-            marginTop:'15px',
-        marginRight:'20px'
+            marginTop: '15px',
+            marginRight: '20px'
           }}
-          >Invoice Date:</h5>
-                <TextField placeholder="Input 5" type='date'
-                   name="invoice_date"
-                   value={formValues.invoice_date }
-                   onChange={(e)=>handleInputChange(e, 'invoice_date')}
-                style={{marginLeft:'-5px',width:'365px'}}/>
-                </div>
-              </FormControl>
+        >Invoice Date:</h5>
+        <TextField
+          placeholder="Input 5"
+          type='date'
+          name="invoice_date"
+          value={formValues.invoice_date}
+          onChange={(e) => {
+            handleInputChange(e, 'invoice_date');
+            setIsInvoiceDateValid(!!e.target.value);
+          }}
+          style={{ marginLeft: '-5px', width: '365px' }}
+        />
+      </div>
+      {/* Error message */}
+      {!isInvoiceDateValid && (
+        <p style={{ color: 'red',marginLeft:'26%',marginBottom:'20px',marginTop:'-20px' }}>* required</p>
+      )}
+    </FormControl>
+
               <Button type="submit" variant="contained" color="primary" style={{marginLeft:'40%',width:'150px'}}>
                 Submit
               </Button>

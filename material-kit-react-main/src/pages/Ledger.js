@@ -122,69 +122,7 @@ export const Ledger = () => {
     fetchData();
   }, [currentPage]);
 
-  // useEffect(() => {
-  //   sessionStorage.setItem('currentPage', currentPage);
-  // }, [currentPage]);
-
-
-  // const dataFetch = async () => {
-  //   const apiUrl = `https://dev.techstreet.in/vmsglen/public/api/ledger?from=${fromDate}&to=${toDate}`;
   
-  //   try {
-  //     console.log('API URL:', apiUrl); // Add this line for debugging
-  //     const response = await axios.get(apiUrl, {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     });
-  
-  //     // console.log('API Response:', response.data); // Add this line for debugging
-      
-  //     setTotalItem(response.data.meta.total)
-  //     setProducts(response.data.data);
-  //     setTotalPages(response.data.meta.last_page);
-  //   } catch (error) {
-  //     console.error('Error fetching data:', error);
-  //   }
-  // };
-
-//   const dataFetch = async () => {
-//     // if (!fromDate || !toDate || fromDate > toDate) {
-//     //   alert('Please select a valid date range.');
-//     //   return;
-//     // }
-
-//     try {
-//       // setCurrentPage(1); // Reset the current page to 1
-// //       setSearching(true);
-// // setProducts('')
-//       const response = await axios.get(apiUrl, {
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//         },
-//         params: {
-//           page:currentPage, // Reset to page 1
-//           per_page: itemsPerPage,
-//           from: fromDate,
-//           to: toDate,
-//         },
-//       });
-
-//       if (!response.data) {
-//         throw new Error('No data received');
-//       }
-// setCurrentPage(response.data.meta.last_page)
-//       setProducts(response.data.data);
-//       setTotalPages(response.data.meta.last_page);
-//       setTotalItem(response.data.meta.total);
-//     } catch (error) {
-//       console.error('Error fetching data:', error);
-//       alert('Error fetching data. Please try again.');
-//     } finally {
-//       setSearching(false);
-//     }
-//   };
-
 
 // download
 const downloadDataFetch = async () => {
@@ -315,69 +253,6 @@ const handleSearch = () => {
   }
 };
 
-// const handleDownload = async () => {
-//   // Make an API request to fetch the PDF data
-//   try {
-//     const response = await axios.get(apiUrl, {
-//       responseType: 'blob', // Set the response type to 'blob'
-//       params: {
-//         from: fromDate,
-//         to: toDate,
-//       },
-//     });
-
-//     // Check if the response contains data
-//     if (response.data) {
-//       console.log(response.data)
-//       // Create a Blob from the response data
-//       const blob = new Blob([response.data], {
-//         type: 'application/pdf',
-//       });
-
-//       // Trigger the download using FileSaver
-//       saveAs(blob, 'ledger-data.pdf'); // Provide a suitable file name
-//     } else {
-//       // Handle the case where the response is empty or doesn't contain valid data
-//       alert('No data to download.');
-//     }
-//   } catch (error) {
-//     console.error('Error fetching data for download:', error);
-//     alert('Error downloading data. Please try again.');
-//   }
-// };
-
-
-// const handleDownload = async () => {
-//   try {
-//     const response = await axios.get(
-//       `https://dev.techstreet.in/vmsglen/public/api/ledger/download?from=${fromDate}&to=${toDate}`,
-//       {
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//         },
-//         responseType: 'blob', // Set the response type to 'blob'
-//       }
-//     );
-
-//     if (response.status === 200) {
-//       const blob = new Blob([response.data.data], {
-//         type: 'application/pdf',
-//       });
-
-//       const url = window.URL.createObjectURL(blob);
-//       const a = document.createElement('a');
-//       a.href = url;
-//       a.download = 'ledger-data.pdf';
-//       a.click();
-//       window.URL.revokeObjectURL(url);
-//     } else {
-//       alert('Error downloading data. Please try again.');
-//     }
-//   } catch (error) {
-//     console.error('Error fetching data for download:', error);
-//     alert('Error downloading data. Please try again.');
-//   }
-// };
 
 
 

@@ -30,7 +30,7 @@ import { Footer } from './pages/Footer';
 
 export default function Router() {
   const {purchaseId}=useAuthContext()
-  console.log(purchaseId)
+  // console.log(purchaseId)
  // const id=purchaseId
   const routes = useRoutes([
     {

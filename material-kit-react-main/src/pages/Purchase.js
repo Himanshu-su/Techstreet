@@ -115,7 +115,7 @@ const UserPage = () => {
               <TableCell>Company Name</TableCell>
               <TableCell>Total Products</TableCell>
               <TableCell>Amount</TableCell>
-              <TableCell> Issued</TableCell>
+              <TableCell>Issued</TableCell>
               <TableCell>Valid</TableCell>
             </TableRow>
           </TableHead>

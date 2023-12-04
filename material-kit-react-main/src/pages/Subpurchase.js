@@ -42,15 +42,16 @@ export const Subpurchase = () => {
   const {orders,setOrders}=useAuthContext()
   const {setPurchaseData}=useAuthContext()
 
+  const itemsPerPage = 10;
+ 
 
-//  console.log("drndata",purchaseData)
 
   useEffect(() => {
     if (!sessionStorage.getItem('token')) {
       // Redirect to the login page if the token is not present
       navigate('/login')}
       else{
-    const fetchData = async () => {
+    const fetchData = async (currentPage) => {
       try {
         const storedPurchaseId = localStorage.getItem('purchaseId');
         // Save data to local storage
@@ -61,12 +62,8 @@ export const Subpurchase = () => {
 
 
         if (storedPurchaseId) {
-          // Use the stored purchaseId instead of the one from context
-          // This ensures that the purchaseId persists across page refreshes
-          // You can still use the purchaseId from context if it's set.
+      
           setPurchaseId(storedPurchaseId);
-          // const newUrl=`https://dev.techstreet.in/vmsglen/public/api/orders/${purchaseId}`
-          // setOrders(newUrl)
         }
 
         const response = await axios.get(`https://dev.techstreet.in/vmsglen/public/api/orders/${purchaseId}`, {
@@ -76,6 +73,7 @@ export const Subpurchase = () => {
           params:{
             page: currentPage,
             search: searchTerm,
+            per_page: itemsPerPage
           }
         });
 
@@ -91,7 +89,7 @@ console.log(response.data.data)
     //  setPurchaseData(response.data.data.deliveries)
 console.log(products)
         // localStorage.setItem('drnData',products)
-        setTotalPages(response.data.last_page);
+
         // localStorage.setItem('', JSON.stringify(response.data.data));
         localStorage.setItem('purchaseId', purchaseId);
          localStorage.setItem('purchaseData', JSON.stringify([companyName]));
@@ -100,13 +98,24 @@ console.log(products)
       }
     };
 
-    fetchData();
-  }}, [purchaseId,orders,setOrders,setPurchaseData]);
+    fetchData(currentPage);
+  }}, [purchaseId,orders,setOrders,setPurchaseData, currentPage, searchTerm]);
+
+  useEffect(() => {
+    if (drnlist && drnlist.length > 0) {
+      const totalPages = Math.ceil(drnlist.length / itemsPerPage);
+      setTotalPages(totalPages);
+    } else {
+      setTotalPages(1);
+    }
+  }, [drnlist]);
   
 //   drn search
 const handlePageChange = (event, newPage) => {
     // console.log(newPage)
     setCurrentPage(newPage);
+    // fetchData(newPage);
+    
   };
 
 const handleSearchChange = (event) => {
@@ -359,18 +368,21 @@ style={{
 {/* tablediv */}
 <div
 style={{
-  margin:'15px 25px 15px 25px',
-  maxHeight: '300px', overflow: 'auto'
+  // margin:'15px 25px 15px 25px',
+  // maxHeight: '300px', overflow: 'auto'
+  margin: '15px 25px 15px 25px',
+  maxWidth: '1500px', // Set a fixed width for horizontal scrolling
+  overflowX: 'auto',
 }}
 >
-<TableContainer component={Paper}
+<TableContainer component={Paper}>
+      <Table  aria-label="simple table"
 
->
-      <Table  aria-label="simple table">
+      >
         <TableHead>
           <TableRow>
-          <TableCell>S No.</TableCell>
-            <TableCell>Product Code </TableCell>
+          <TableCell >S No.</TableCell>
+            <TableCell >Product Code </TableCell>
             <TableCell >Product Name</TableCell>
             <TableCell >Remark</TableCell>
             <TableCell >Price</TableCell>
@@ -491,7 +503,7 @@ style={{
 <div
 style={{
   margin:'15px 25px 15px 25px',
-  maxHeight: '300px', overflow: 'auto'
+  maxHeight: '500px', overflow: 'auto'
 }}
 >
 <TableContainer component={Paper}
@@ -632,21 +644,7 @@ style={{
           </TableRow>
         </TableHead>
         <TableBody>
-  {/* {lineItem.map((item,index) => (
-    <TableRow key={item.id}>
-      <TableCell>{index+1}</TableCell>
-      <TableCell>{item.product_code}</TableCell>
-      <TableCell>{item.product_name}</TableCell>
-      <TableCell>{item.remark}</TableCell>
-      <TableCell>{item.product_price}</TableCell>
-      <TableCell>{item.gst}</TableCell>
-      <TableCell>{item.quantity}</TableCell>
-      <TableCell>{item.quantityInvoiced}</TableCell>
-      <TableCell>{item.outstandingQuantity}</TableCell>
-      <TableCell>{item.total_price}</TableCell>
-      <TableCell>{item.schedule}</TableCell>  
-    </TableRow>
-  ))} */}
+
 <TableRow>
 <div
  style={{
