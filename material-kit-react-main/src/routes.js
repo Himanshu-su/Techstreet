@@ -23,6 +23,7 @@ import { useAuthContext } from './pages/AuthProvider';
 import { Drnlist } from './pages/Drnlist';
 import { Newdrn } from './pages/Newdrn';
 import { Footer } from './pages/Footer';
+import { CompanySelection } from './pages/Companyselection';
 
 
 
@@ -46,7 +47,8 @@ export default function Router() {
         { path: 'ledger', element: <Ledger /> },
         { path: 'delivery', element: <Delivery /> },
         { path: 'subpurchase', element: <Subpurchase /> },
-        { path: 'subpurchase/drnlist', element: <Drnlist /> }
+        { path: 'subpurchase/drnlist', element: <Drnlist /> },
+        
         // { path: `subpurchase/:${purchaseId}`, element: <Subpurchase /> }
 
         
@@ -59,6 +61,7 @@ export default function Router() {
       path: 'login',
       element: <LoginPage />,
     },
+    { path: 'companyselection', element: <CompanySelection /> },
     
     {
       element: <SimpleLayout />,

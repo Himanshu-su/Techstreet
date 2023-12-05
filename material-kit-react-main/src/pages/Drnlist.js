@@ -911,7 +911,8 @@ onChange={handleChange3}
     </div>
     {/* message */}
     {showGRNErrorMessage && (
-      <p style={{ color: 'red' }}>GRN is required if grand total amount is greater than 50000</p>
+      <p style={{ color: 'red',marginLeft:'140px' }}>*GRN is required if grand total 
+       amount is greater <br /> than 50000</p>
     )}
 
   </FormControl>

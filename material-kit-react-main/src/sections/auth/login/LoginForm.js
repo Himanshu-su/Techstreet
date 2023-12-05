@@ -104,7 +104,7 @@ export default function LoginForm () {
         console.log(`token:${response.data.access_token}`)
         //  setToken(response.data.access_token)
         
-        navigate('/dashboard/app')
+        navigate('/companyselection')
         // localStorage.removeItem("token")
 // toast.success("success login")
         // Redirect to a new page or perform other actions after successful login
