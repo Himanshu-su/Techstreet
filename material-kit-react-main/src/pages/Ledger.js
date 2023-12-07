@@ -24,9 +24,15 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { Label } from '@mui/icons-material';
 
-const apiUrl = 'https://dev.techstreet.in/vmsglen/public/api/ledger';
-// const apiToken = '84|YfnNVUukdmkzwP8XzkGld0zn0FKG2R0AeY2ARQm3';
- const  token = sessionStorage.getItem("token"); 
+// const apiUrl = 'https://dev.techstreet.in/vmsglen/public/api/ledger';
+// // const apiToken = '84|YfnNVUukdmkzwP8XzkGld0zn0FKG2R0AeY2ARQm3';
+//  const  token = sessionStorage.getItem("token"); 
+
+const companyData=JSON.parse(localStorage.getItem("comapanyData"))
+const defaultCompany = companyData && companyData.length>0
+?companyData.filter((company) => company.default === "1"):null
+const apiUrl=defaultCompany?defaultCompany.api_url:'defaultFallbackUrl'
+const token=defaultCompany?defaultCompany.service_token:'defaultServicsToken'
 
 
 const itemsPerPage = 15;
@@ -91,6 +97,10 @@ export const Ledger = () => {
   //   }
   // };
 // 2
+console.log(apiUrl)
+
+
+
   const fetchData = async () => {
     try {
       const response = await axios.get(apiUrl, {
@@ -104,7 +114,7 @@ export const Ledger = () => {
           to: toDate,
         },
       });
-
+console.log(response)
       setTotalItem(response.data.meta.total);
       setProducts(response.data.data);
       setTotalPages(response.data.meta.last_page);

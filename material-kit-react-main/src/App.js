@@ -34,10 +34,10 @@ export default function App() {
        
           <ScrollToTop />
           <StyledChart />
-         <TokenLogic>
+         {/* <TokenLogic> */}
           <Router />
           {/* <ToastContainer position="top-left" autoClose={2000} /> */}
-          </TokenLogic>
+          {/* </TokenLogic> */}
           </AuthProvider>
         
         </ThemeProvider>

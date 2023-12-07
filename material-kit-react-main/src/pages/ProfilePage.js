@@ -132,19 +132,51 @@ export const ProfilePage = () => {
   const navigate=useNavigate()
     const [data,setData]=useState({})
 
-    useEffect(()=>{
+    const companyData=JSON.parse(localStorage.getItem("defaultCompanyData"))
+    console.log(companyData)
+// const defaultCompany = companyData && companyData.length>0
+// ?companyData.filter((company) => company.default === "1"):null
+const apiUrl=companyData.api_url
 
-      if(!localStorage.getItem("token")){
-        navigate('/login')
-      }
+// const apiUrl='https:\/\/b1.techstreet.in\/api/profile'
+// const apiUrl='https://b1.techstreet.in/api/profile'
+const token= companyData.service_token;
+console.log(token);
+console.log(apiUrl)
+    // useEffect(()=>{
+
+    //   if(!localStorage.getItem("token")){
+    //     navigate('/login')
+    //   }
 
       
 
-        axios.get("https://dev.techstreet.in/vmsglen/public/api/profile",{
-        headers:{
-            Authorization:`Bearer ${'147|770QaHeB3OMMoRMScdjc88lk8WLtJiAhxunPbWjT'}`
+    //     axios.get("https://dev.techstreet.in/vmsglen/public/api/profile",{
+    //     headers:{
+    //         Authorization:`Bearer ${'147|770QaHeB3OMMoRMScdjc88lk8WLtJiAhxunPbWjT'}`
+    //     }
+    //     })
+        
+    //     .then((res)=>{
+    //         console.log(res.data.data)
+    //         setData(res.data.data)
+    //     })
+        
+    //     },[])
+
+    useEffect(()=>{
+
+      // if(!localStorage.getItem("token")){
+      //   navigate('/login')
+      // }
+
+      
+
+      axios.get(`${apiUrl}/profile`, {
+        headers: {
+            Authorization: `Bearer ${token}`
         }
-        })
+    })
         
         .then((res)=>{
             console.log(res.data.data)

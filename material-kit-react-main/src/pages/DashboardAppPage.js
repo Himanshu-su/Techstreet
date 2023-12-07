@@ -36,19 +36,126 @@ export default function DashboardAppPage() {
   const theme = useTheme();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!sessionStorage.getItem('token')) {
-      // Redirect to the login page if the token is not present
-      navigate('/login');
-    } else if (!toastShown && !sessionStorage.getItem('toastShown')) {
-      // Display the success message
-      toast.success('Nice');
-      // Set the flag in sessionStorage to indicate that the message has been shown
-      sessionStorage.setItem('toastShown', 'true');
-      // Set the flag in the component's state as well
-      setToastShown(true);
+  // const companyData = [
+  //   {
+  //     "app_name": "MKUVMS",
+  //     "company_fullname": "MKUVMS",
+  //     "company_shortname": "MKU",
+  //     "homepage": "https:\/\/mkuvms.bizprocure.com",
+  //     "api_url": "https:\/\/mkuvms.bizprocure.com\/api",
+  //     "is_locked": null,
+  //     "default": "0",
+  //     "logo": "https:\/\/mkuvms.bizprocure.com\/assets\/media\/logos\/mku.png",
+  //     "last_synced_at": "2023-12-06 12:00:29",
+  //     "last_active_at": null,
+  //     "enabled": "1",
+  //     "created_at": "2023-12-06 12:00:29",
+  //     "updated_at": "2023-12-06 18:04:40",
+  //     "service_token": "1|R6drZxR0FA8JBk7wDTjiem0k0BLzMo7DBdH48hmv"
+  // },
+  // {
+  //     "app_name": "GLEN",
+  //     "company_fullname": "GLEN",
+  //     "company_shortname": "GLEN",
+  //     "homepage": "https:\/\/b1.techstreet.in",
+  //     "api_url": "https:\/\/b1.techstreet.in\/api",
+  //     "is_locked": null,
+  //     "default": "1",
+  //     "logo": "https:\/\/b1.techstreet.in\/assets\/media\/logos\/glen.png",
+  //     "last_synced_at": "2023-12-06 17:55:16",
+  //     "last_active_at": null,
+  //     "enabled": "1",
+  //     "created_at": "2023-12-06 17:55:16",
+  //     "updated_at": "2023-12-06 18:04:40",
+  //     "service_token": "31|wJ5g6z9FCL6uC8Ib7JBLSHOx0mNUOrPW2KSHGjP1"
+  // }
+  // ];
+
+  const WholeCompanyData = [
+    {
+      "app_name": "MKUVMS",
+      "company_fullname": "MKUVMS",
+      "company_shortname": "MKU",
+      "homepage": "https://mkuvms.bizprocure.com",
+      "api_url": "https://mkuvms.bizprocure.com/api",
+      "is_locked": null,
+      "default": "0",
+      "logo": "https://mkuvms.bizprocure.com/assets/media/logos/mku.png",
+      "last_synced_at": "2023-12-06 12:00:29",
+      "last_active_at": null,
+      "enabled": "1",
+      "created_at": "2023-12-06 12:00:29",
+      "updated_at": "2023-12-06 18:04:40",
+      "service_token": "1|R6drZxR0FA8JBk7wDTjiem0k0BLzMo7DBdH48hmv"
+    },
+    {
+      "app_name": "GLEN",
+      "company_fullname": "GLEN",
+      "company_shortname": "GLEN",
+      "homepage": "https://b1.techstreet.in",
+      "api_url": "https://b1.techstreet.in/api",
+      "is_locked": null,
+      "default": "1",
+      "logo": "https://b1.techstreet.in/assets/media/logos/glen.png",
+      "last_synced_at": "2023-12-06 17:55:16",
+      "last_active_at": null,
+      "enabled": "1",
+      "created_at": "2023-12-06 17:55:16",
+      "updated_at": "2023-12-06 18:04:40",
+      "service_token": "31|wJ5g6z9FCL6uC8Ib7JBLSHOx0mNUOrPW2KSHGjP1"
     }
-  }, [navigate, toastShown]);
+  ];
+  
+
+  const defaultCompanyData = 
+   
+    {
+      "app_name": "GLEN",
+      "company_fullname": "GLEN",
+      "company_shortname": "GLEN",
+      "homepage": "https://b1.techstreet.in",
+      "api_url": "https://b1.techstreet.in/api",
+      "is_locked": null,
+      "default": "1",
+      "logo": "https://b1.techstreet.in/assets/media/logos/glen.png",
+      "last_synced_at": "2023-12-06 17:55:16",
+      "last_active_at": null,
+      "enabled": "1",
+      "created_at": "2023-12-06 17:55:16",
+      "updated_at": "2023-12-06 18:04:40",
+      "service_token": "31|wJ5g6z9FCL6uC8Ib7JBLSHOx0mNUOrPW2KSHGjP1"
+    }
+  
+  
+  
+
+
+  
+
+
+  useEffect(() => {
+ 
+    const storedCompanyData = JSON.parse(localStorage.getItem('defaultCompanyData'));
+
+    if (!storedCompanyData) {
+
+      localStorage.setItem('defaultCompanyData', JSON.stringify(defaultCompanyData));
+    }
+  }, []);
+  
+  // useEffect(() => {
+  //   if (!sessionStorage.getItem('token')) {
+  //     // Redirect to the login page if the token is not present
+  //     navigate('/login');
+  //   } else if (!toastShown && !sessionStorage.getItem('toastShown')) {
+  //     // Display the success message
+  //     toast.success('Nice');
+  //     // Set the flag in sessionStorage to indicate that the message has been shown
+  //     sessionStorage.setItem('toastShown', 'true');
+  //     // Set the flag in the component's state as well
+  //     setToastShown(true);
+  //   }
+  // }, [navigate, toastShown]);
 
 
   return (

@@ -34,6 +34,10 @@ export default function Router() {
   // console.log(purchaseId)
  // const id=purchaseId
   const routes = useRoutes([
+    // {
+    //   path: '/',
+    //   element: <Navigate to="/dashboard/app" replace />,
+    // },
     {
       path: '/dashboard',
       element: <DashboardLayout /> ,
