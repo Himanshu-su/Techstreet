@@ -130,45 +130,69 @@ const WholeCompanyData = [
 
 
 const CompanyDropdown = () => {
+ 
+
+    // const { selectedCompany, updateSelectedCompany } = useCompanyContext();
     // const [selectCompany, setSelectCompany] = useState('');
-
-    //   const handleChange = (e) => {
-    //     const selectedCompany = e.target.value;
-    //     setSelectCompany(selectedCompany);
-    
-    //     // Assuming 'WholeCompanyData' is available in the scope
-    //     const companyData = WholeCompanyData.find((company) => company.app_name === selectedCompany);
-    
-    //     if (companyData) {
-    //       // Store the selected company as a JSON string in localStorage
-    //       localStorage.setItem('selectcompany', JSON.stringify(companyData));
-    //     }
-    //   };
-
-    const { selectedCompany, updateSelectedCompany } = useCompanyContext();
+  
+    // const handleChange = (e) => {
+    //   const selectedCompany = e.target.value;
+    //   setSelectCompany(selectedCompany);
+  
+    //   const companyData = WholeCompanyData.find((company) => company.app_name === selectedCompany);
+  
+    //   if (companyData) {
+    //     updateSelectedCompany(companyData);
+    //   }
+    // };
+    const { updateSelectedCompany, updateApiUrl, apiUrl } = useCompanyContext();
+    const [companyData, setCompanyData] = useState([]);
     const [selectCompany, setSelectCompany] = useState('');
+
+    useEffect(() => {
+      // Fetch data from the API
+  
+      fetch(`${apiUrl}/profile`, {
+        headers: {
+          'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
+        },
+      })
+        .then(response => response.json())
+        .then(data => {
+          // console.log(data);
+          const apiCompanyData = data.data.companies || [];
+          console.log(apiCompanyData);
+          setCompanyData(apiCompanyData);
+        })
+        .catch(error => console.error('Error fetching company data:', error));
+    }, [apiUrl]); // Add apiUrl as a dependency to fetch data when apiUrl changes
   
     const handleChange = (e) => {
-      const selectedCompany = e.target.value;
-      setSelectCompany(selectedCompany);
-  
-      const companyData = WholeCompanyData.find((company) => company.app_name === selectedCompany);
-  
-      if (companyData) {
-        updateSelectedCompany(companyData);
+      const selectedCompanyName = e.target.value;
+      setSelectCompany(selectedCompanyName);
+     
+      const selectedCompany = companyData.find((company) => company.app_name === selectedCompanyName);
+      console.log(selectedCompany)
+      if (selectedCompany) {
+        updateSelectedCompany(selectedCompany);
+        updateApiUrl(selectedCompany.api_url); // Assuming the selectedCompany object has an 'api_url' property
       }
     };
 
+    // const selectedCompanyData = companyData.find((company) => company.id === selectedCompany);
+
+
     return (
-        <FormControl>
-        <InputLabel id="company-dropdown-label">Select Company Name</InputLabel>
+        <FormControl style={{width:'200px',marginLeft:'15px'}}>
+        <InputLabel id="company-dropdown-label"  >Select Company </InputLabel>
         <Select
           labelId="company-dropdown-label"
           id="company-dropdown"
           onChange={handleChange}
           value={selectCompany}
           label="Select Company"
-          SelectProps={{ native: true }}
+          // SelectProps={{ native: true }}
         >
           {WholeCompanyData.map((company, index) => (
             <MenuItem key={index} value={company.company_fullname}>

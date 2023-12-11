@@ -52,6 +52,7 @@ export default function Router() {
         { path: 'delivery', element: <Delivery /> },
         { path: 'subpurchase', element: <Subpurchase /> },
         { path: 'subpurchase/drnlist', element: <Drnlist /> },
+        // { path: 'companyselection', element: <CompanySelection /> },
         
         // { path: `subpurchase/:${purchaseId}`, element: <Subpurchase /> }
 
@@ -65,7 +66,7 @@ export default function Router() {
       path: 'login',
       element: <LoginPage />,
     },
-    { path: 'companyselection', element: <CompanySelection /> },
+   
     
     {
       element: <SimpleLayout />,

@@ -97,7 +97,7 @@ export const Ledger = () => {
   //   }
   // };
 // 2
-console.log(apiUrl)
+// console.log(apiUrl)
 
 
 

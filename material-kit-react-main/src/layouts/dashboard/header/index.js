@@ -43,6 +43,11 @@ Header.propTypes = {
   onOpenNav: PropTypes.func,
 };
 
+const StyledCompanyDropdown = styled(CompanyDropdown)(({ theme }) => ({
+  width: 200, // Set the desired width
+}));
+
+
 export default function Header({ onOpenNav }) {
   return (
     <StyledRoot>
@@ -70,10 +75,12 @@ export default function Header({ onOpenNav }) {
           }}
         >
           {/* < CompanyDropdown /> */}
-          < CompanyDropdown/>
+          
           <AccountPopover />
         </Stack>
+      
       </StyledToolbar>
+      < CompanyDropdown />
     </StyledRoot>
   );
 }

@@ -92,7 +92,8 @@ export default function LoginForm () {
     if (validateForm()) {
       try {
         // Make the API POST request here
-        const response = await axios.post('https://dev.techstreet.in/vmsglen/public/api/login', {
+        // const response = await axios.post('https://dev.techstreet.in/vmsglen/public/api/login', {
+          const response = await axios.post(' https://vendor.bizprocure.com/api/central/login', {
           email: formData.email,
           password: formData.password,
         });
@@ -104,8 +105,8 @@ export default function LoginForm () {
         console.log(`token:${response.data.access_token}`)
         //  setToken(response.data.access_token)
         
-        navigate('/companyselection')
-        // localStorage.removeItem("token")
+        navigate('/dashboard/app')
+        //  sessionStorage.removeItem("token")
 // toast.success("success login")
         // Redirect to a new page or perform other actions after successful login
       } catch (error) {
