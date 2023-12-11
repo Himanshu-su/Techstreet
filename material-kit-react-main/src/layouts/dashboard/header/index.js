@@ -9,8 +9,9 @@ import Iconify from '../../../components/iconify';
 //
 import Searchbar from './Searchbar';
 import AccountPopover from './AccountPopover';
-import LanguagePopover from './LanguagePopover';
+// import LanguagePopover from '../../../pages/Selectcompany';
 import NotificationsPopover from './NotificationsPopover';
+import CompanyDropdown from '../../../pages/Selectcompany';
 
 // ----------------------------------------------------------------------
 
@@ -68,8 +69,8 @@ export default function Header({ onOpenNav }) {
             sm: 1,
           }}
         >
-          <LanguagePopover />
-          <NotificationsPopover />
+          {/* < CompanyDropdown /> */}
+          < CompanyDropdown/>
           <AccountPopover />
         </Stack>
       </StyledToolbar>

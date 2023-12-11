@@ -123,26 +123,20 @@ import { Box, Container, Stack, Typography, Unstable_Grid2 as Grid ,Button,Divid
 import { Helmet } from 'react-helmet-async';
 import './index.css';
 import { useNavigate } from 'react-router-dom';
+import { useCompanyContext } from './selecompany/companyselection';
+
+
+
 
 
 
 
 export const ProfilePage = () => {
 
-  const navigate=useNavigate()
-    const [data,setData]=useState({})
+  
+    
 
-    const companyData=JSON.parse(localStorage.getItem("defaultCompanyData"))
-    console.log(companyData)
-// const defaultCompany = companyData && companyData.length>0
-// ?companyData.filter((company) => company.default === "1"):null
-const apiUrl=companyData.api_url
-
-// const apiUrl='https:\/\/b1.techstreet.in\/api/profile'
-// const apiUrl='https://b1.techstreet.in/api/profile'
-const token= companyData.service_token;
-console.log(token);
-console.log(apiUrl)
+  
     // useEffect(()=>{
 
     //   if(!localStorage.getItem("token")){
@@ -164,29 +158,168 @@ console.log(apiUrl)
         
     //     },[])
 
-    useEffect(()=>{
-
-      // if(!localStorage.getItem("token")){
-      //   navigate('/login')
-      // }
-
-      
-
-      axios.get(`${apiUrl}/profile`, {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    })
+  //   useEffect(()=>{
+  //     const companyData=JSON.parse(localStorage.getItem("defaultCompanyData"))
+  //     console.log(companyData)
+  // const apiUrl=companyData.api_url
+  
+  
+  // const token= companyData.service_token;
+  // console.log(token);
+  // console.log(apiUrl)
+  //     axios.get(`${apiUrl}/profile`, {
+  //       headers: {
+  //           Authorization: `Bearer ${token}`
+  //       }
+  //   })
         
-        .then((res)=>{
-            console.log(res.data.data)
-            setData(res.data.data)
-        })
+  //       .then((res)=>{
+  //           console.log(res.data.data)
+  //           setData(res.data.data)
+  //       })
         
-        },[])
+  //       },[])
+
+//   useEffect(() => {
+//     const selectedCompanyString = localStorage.getItem('selectcompany');
+
+//     if (selectedCompanyString) {
+//       // If a company is selected, use its api_url
+//       const selectedCompany = JSON.parse(selectedCompanyString);
+// console.log(selectedCompany)
+//       if (selectedCompany) {
+//         setApiUrl(selectedCompany.api_url);
+//         const token = selectedCompany.service_token;
+// console.log(apiUrl)
+// console.log(token)
+// console.log(data)
+//         try {
+//           axios.get(`${selectedCompany.api_url}/profile`, {
+//             headers: {
+//               Authorization: `Bearer ${token}`,
+//             },
+//           })
+//           .then((res) => {
+//             setData(res.data.data);
+//           })
+//           .catch((error) => {
+//             console.error('Error fetching profile data:', error);
+//           });
+//         } catch (error) {
+//           console.error('Error fetching profile data:', error);
+//         }
+//       }
+//     } else {
+//       // If no company is selected, use the default company's api_url
+//       const storedCompanyData = JSON.parse(localStorage.getItem('defaultCompanyData'));
+
+//       if (storedCompanyData) {
+//         setApiUrl(storedCompanyData.api_url);
+//         const token = storedCompanyData.service_token;
+
+//         try {
+//           axios.get(`${storedCompanyData.api_url}/profile`, {
+//             headers: {
+//               Authorization: `Bearer ${token}`,
+//             },
+//           })
+//           .then((res) => {
+//             setData(res.data.data);
+//           })
+//           .catch((error) => {
+//             console.error('Error fetching profile data:', error);
+//           });
+//         } catch (error) {
+//           console.error('Error fetching profile data:', error);
+//         }
+//       }
+//     }
+//   }, []);
+
+const navigate=useNavigate()
+    const [data,setData]=useState([])
+    const { selectedCompany } = useCompanyContext();
+    // const [selectedCompany, setSelectedCompany] = useState([]);
+    const [apiUrl, setApiUrl] = useState(''); 
+
+    const WholeCompanyData = [
+      {
+        "app_name": "MKUVMS",
+        "company_fullname": "MKUVMS",
+        "company_shortname": "MKU",
+        "homepage": "https://mkuvms.bizprocure.com",
+        "api_url": "https://mkuvms.bizprocure.com/api",
+        "is_locked": null,
+        "default": "0",
+        "logo": "https://mkuvms.bizprocure.com/assets/media/logos/mku.png",
+        "last_synced_at": "2023-12-06 12:00:29",
+        "last_active_at": null,
+        "enabled": "1",
+        "created_at": "2023-12-06 12:00:29",
+        "updated_at": "2023-12-06 18:04:40",
+        "service_token": "1|R6drZxR0FA8JBk7wDTjiem0k0BLzMo7DBdH48hmv"
+      },
+      {
+        "app_name": "GLEN",
+        "company_fullname": "GLEN",
+        "company_shortname": "GLEN",
+        "homepage": "https://b1.techstreet.in",
+        "api_url": "https://b1.techstreet.in/api",
+        "is_locked": null,
+        "default": "1",
+        "logo": "https://b1.techstreet.in/assets/media/logos/glen.png",
+        "last_synced_at": "2023-12-06 17:55:16",
+        "last_active_at": null,
+        "enabled": "1",
+        "created_at": "2023-12-06 17:55:16",
+        "updated_at": "2023-12-06 18:04:40",
+        "service_token": "31|wJ5g6z9FCL6uC8Ib7JBLSHOx0mNUOrPW2KSHGjP1"
+      }
+    ];
+
+
+
+  useEffect(() => {
+ console.log(selectedCompany)
+    
+    const fetchData = async (url, token) => {
+      try {
+        const response = await axios.get(`${url}/profile`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      console.log(url)
+        setData(response.data.data);
+        console.log(data)
+      } catch (error) {
+        console.error('Error fetching profile data:', error);
+      }
+    };
+   
+    // console.log(selectedCompany.api_url)
+    if (selectedCompany) {
+      setApiUrl(selectedCompany.api_url);
+      fetchData(selectedCompany.api_url, selectedCompany.service_token);
+    } else {
+      // If no company is selected, use the default company's api_url
+      const storedCompanyData = JSON.parse(localStorage.getItem('defaultCompanyData'));
+
+      if (storedCompanyData) {
+        setApiUrl(storedCompanyData.api_url);
+        fetchData(storedCompanyData.api_url, storedCompanyData.service_token);
+      }
+    }
+  }, [selectedCompany]);
+
+
 
   return (
     <div>
+       {/* <CompanyDropdown
+        handleChange={handleCompanyChange}
+        selectCompany={selectedCompany}
+      /> */}
       {/* <Helmet>
         <title> User | Minimal UI </title>
       </Helmet>
