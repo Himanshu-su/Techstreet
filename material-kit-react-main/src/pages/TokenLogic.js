@@ -5,7 +5,7 @@ export const TokenLogic = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const hasToken = !sessionStorage.getItem("token");
+    const hasToken = !localStorage.getItem("token");
 
     if (hasToken) {
       // Redirect to the '/login' route if token is not present

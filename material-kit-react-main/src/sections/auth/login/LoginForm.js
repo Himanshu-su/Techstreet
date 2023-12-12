@@ -101,7 +101,7 @@ export default function LoginForm () {
         // Handle the API response as needed
         // console.log('API Response:', response.data);
         console.log('Login successful. Storing token in localStorage:', response.data.access_token);
-        sessionStorage.setItem("token", response.data.access_token);
+       localStorage.setItem("token", response.data.access_token);
         console.log(`token:${response.data.access_token}`)
         //  setToken(response.data.access_token)
         

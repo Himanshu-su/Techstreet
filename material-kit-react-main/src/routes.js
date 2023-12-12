@@ -55,9 +55,7 @@ export default function Router() {
         // { path: 'companyselection', element: <CompanySelection /> },
         
         // { path: `subpurchase/:${purchaseId}`, element: <Subpurchase /> }
-
-        
-        
+ 
       ],
     },
    // <Route path="/dashboard/subpurchase/:purchaseId" component={Subpurchase} />

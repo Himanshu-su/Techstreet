@@ -150,7 +150,7 @@ return  navigate('/profile')
         <MenuItem  sx={{ m: 1 }}>
      <div>
      <button onClick={()=>{
-      sessionStorage.removeItem("token")
+     localStorage.removeItem("token")
       navigate("/login")
      }} style={{
           borderRadius:'1px solid white '

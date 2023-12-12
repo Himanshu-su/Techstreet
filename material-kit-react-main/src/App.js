@@ -1,7 +1,9 @@
+
+
 import { useEffect, useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, useLocation } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { ChakraProvider } from '@chakra-ui/react';
 // import "bootstrap/dist/js/bootstrap.bundle.min"
@@ -47,7 +49,7 @@ export default function App() {
     "updated_at": "2023-12-06 18:04:40",
     "service_token": "31|wJ5g6z9FCL6uC8Ib7JBLSHOx0mNUOrPW2KSHGjP1"
   }
-
+const {pathname}=useLocation()
  
   useEffect(() => {
     const storedCompanyData = JSON.parse(localStorage.getItem('defaultCompanyData'));
@@ -108,25 +110,19 @@ export default function App() {
 
   return (
     <ChakraProvider>
-    <HelmetProvider>
-      <BrowserRouter>
+      <HelmetProvider>
         <ThemeProvider>
-        
           <AuthProvider>
-       <CompanyProvider>
-          <ScrollToTop />
-          <StyledChart />
-         {/* <TokenLogic> */}
-         <CompanyDropdown />
-          <Router />
-          {/* <ToastContainer position="top-left" autoClose={2000} /> */}
-          {/* </TokenLogic> */}
-          </CompanyProvider>
+            <CompanyProvider>
+              <ScrollToTop />
+              <StyledChart />
+              {pathname !== '/login' && <CompanyDropdown />}
+              <Router />
+            </CompanyProvider>
           </AuthProvider>
-        
         </ThemeProvider>
-      </BrowserRouter>
-    </HelmetProvider></ChakraProvider>
+      </HelmetProvider>
+    </ChakraProvider>
   );
 }
 
